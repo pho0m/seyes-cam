@@ -58,6 +58,9 @@ func HTTPAPIServer() {
 		public.GET("/pages/documentation", HTTPAPIServerDocumentation)
 		public.GET("/pages/player/all/:uuid/:channel", HTTPAPIPlayAll)
 		public.StaticFS("/static", http.Dir(Storage.ServerHTTPDir()+"/static"))
+		// Get image from rtsp
+	  public.GET("/image/:uuid/channel/:channel", GetImageFromDisk)
+
 	}
 
 	/*
@@ -103,6 +106,7 @@ func HTTPAPIServer() {
 	//MSE
 	public.GET("/stream/:uuid/channel/:channel/mse", HTTPAPIServerStreamMSE)
 	public.POST("/stream/:uuid/channel/:channel/webrtc", HTTPAPIServerStreamWebRTC)
+
 
 	/*
 		HTTPS Mode Cert

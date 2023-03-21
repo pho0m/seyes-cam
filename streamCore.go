@@ -1,12 +1,19 @@
 package main
 
 import (
+	"encoding/base64"
+	"image/jpeg"
+
+	"io/ioutil"
 	"math"
 	"net/url"
+	"os"
 	"strings"
 	"time"
 
+	"github.com/deepch/vdk/cgo/ffmpeg"
 	"github.com/deepch/vdk/format/rtmp"
+	"github.com/gin-gonic/gin"
 
 	"github.com/deepch/vdk/av"
 	"github.com/deepch/vdk/format/rtspv2"
@@ -86,12 +93,20 @@ func StreamServerRunStream(streamID string, channelID string, opt *ChannelST) (i
 	/*
 		Example wait codec
 	*/
+  var videoIDX int
+
 	if RTSPClient.WaitCodec {
 		WaitCodec = true
 	} else {
 		if len(RTSPClient.CodecData) > 0 {
 			Storage.StreamChannelCodecsUpdate(streamID, channelID, RTSPClient.CodecData, RTSPClient.SDPRaw)
 		}
+			for i, codec := range RTSPClient.CodecData {
+		
+		if codec.Type().IsVideo() {
+			videoIDX = i
+		}
+	}
 	}
 	log.WithFields(logrus.Fields{
 		"module":  "core",
@@ -158,6 +173,26 @@ func StreamServerRunStream(streamID string, channelID string, opt *ChannelST) (i
 			if packetAV.IsKeyFrame && !start {
 				start = true
 			}
+
+
+			var FrameDecoderSingle *ffmpeg.VideoDecoder
+
+			FrameDecoderSingle, err = ffmpeg.NewVideoDecoder(RTSPClient.CodecData[videoIDX].(av.VideoCodecData))
+			if err != nil {
+				log.Fatalln("FrameDecoderSingle Error", err)
+			}
+
+			if packetAV.IsKeyFrame {
+				//sample single frame decode encode to jpeg save on disk //
+				if pic, err := FrameDecoderSingle.DecodeSingle(packetAV.Data); err == nil && pic != nil {
+					if out, err := os.Create("./output-"+ streamID + "-"+".jpg" ); err == nil {
+						if err = jpeg.Encode(out, &pic.Image, nil); err == nil {
+							logrus.Print("image save !" + out.Name() )
+						}
+					}
+				}
+			}
+			
 			/*
 				FPS mode probe
 			*/
@@ -310,4 +345,41 @@ func StreamServerRunStreamRTMP(streamID string, channelID string, opt *ChannelST
 			}
 		}
 	}
+}
+
+
+func GetImageFromDisk(c *gin.Context){
+
+	uuid := c.Params.ByName("uuid")
+
+	fileBytes, err := ioutil.ReadFile("output-"+ uuid + "-.jpg")
+	if err != nil {
+		panic(err)
+	}
+
+b64 :=ConvertToBase64(fileBytes)
+
+		if err != nil {
+		c.IndentedJSON(500, Message{Status: 0, Payload: err.Error()})
+		return
+	}
+
+	
+	
+  c.JSON(200,gin.H{
+          "img":b64,
+    })
+	
+	}
+
+// Takes bytes and returns encoded base64 string
+func toBase64(b[] byte) string {
+        return base64.StdEncoding.EncodeToString(b)
+    }
+
+	// Takes Image and converts returns it base64 string
+func ConvertToBase64(imgByte []byte) string {
+   
+    bs64string:= "data:image/jpeg;base64," + toBase64(imgByte)
+    return bs64string
 }

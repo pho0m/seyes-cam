@@ -1,4 +1,5 @@
 {
+  "channel_defaults": {},
   "server": {
     "debug": true,
     "http_debug": false,
@@ -6,32 +7,41 @@
     "http_dir": "web",
     "http_login": "demo",
     "http_password": "demo",
-    "http_port": ":8083",
+    "http_port": ":9093",
     "https": false,
     "https_auto_tls": false,
     "https_auto_tls_name": "",
     "https_cert": "server.crt",
     "https_key": "server.key",
     "https_port": ":443",
+    "ice_credential": "",
     "ice_servers": ["stun:stun.l.google.com:19302"],
+    "ice_username": "",
     "log_level": "debug",
     "rtsp_port": ":5541",
     "token": {
-      "backend": "http://127.0.0.1/test.php"
+      "backend": "http://127.0.0.1/test.php",
+      "enable": false
     },
-    "defaults": {
-      "audio": false
-    }
+    "webrtc_port_max": 0,
+    "webrtc_port_min": 0
   },
   "streams": {
     "27aec28e-6181-4753-9acd-0456a75f0289": {
       "channels": {
         "0": {
-          "url": "rtsp://admin123:admin123@192.168.0.8:554/stream1",
-          "debug": false
+          "url": "rtsp://202.44.35.76:5541/c319f57f-6db1-4ada-9ca4-f0fdb38c13f2/0"
         }
       },
-      "name": "111111111"
+      "name": "cam1_709"
+    },
+    "c319f57f-6db1-4ada-9ca4-f0fdb38c13f2": {
+      "channels": {
+        "0": {
+          "url": "rtsp://202.44.35.76:5541/27aec28e-6181-4753-9acd-0456a75f0289/0"
+        }
+      },
+      "name": "cam2_702"
     }
   }
 }
