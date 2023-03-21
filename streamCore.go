@@ -367,7 +367,7 @@ b64 :=ConvertToBase64(fileBytes)
 	
 	
   c.JSON(200,gin.H{
-          "img":b64,
+          "image":b64,
     })
 	
 	}
