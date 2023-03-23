@@ -20,7 +20,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-//StreamServerRunStreamDo stream run do mux
+// StreamServerRunStreamDo stream run do mux
 func StreamServerRunStreamDo(streamID string, channelID string) {
 	var status int
 	defer func() {
@@ -68,7 +68,7 @@ func StreamServerRunStreamDo(streamID string, channelID string) {
 	}
 }
 
-//StreamServerRunStream core stream
+// StreamServerRunStream core stream
 func StreamServerRunStream(streamID string, channelID string, opt *ChannelST) (int, error) {
 	if url, err := url.Parse(opt.URL); err == nil && strings.ToLower(url.Scheme) == "rtmp" {
 		return StreamServerRunStreamRTMP(streamID, channelID, opt)
@@ -79,7 +79,7 @@ func StreamServerRunStream(streamID string, channelID string, opt *ChannelST) (i
 	var fps int
 	var preKeyTS = time.Duration(0)
 	var Seq []*av.Packet
-	RTSPClient, err := rtspv2.Dial(rtspv2.RTSPClientOptions{URL: opt.URL, InsecureSkipVerify: opt.InsecureSkipVerify, DisableAudio: !opt.Audio, DialTimeout: 3 * time.Second, ReadWriteTimeout: 5 * time.Second, Debug: opt.Debug, OutgoingProxy: true})
+	RTSPClient, err := rtspv2.Dial(rtspv2.RTSPClientOptions{URL: opt.URL, InsecureSkipVerify: opt.InsecureSkipVerify, DisableAudio: true, DialTimeout: 3 * time.Second, ReadWriteTimeout: 5 * time.Second, Debug: opt.Debug, OutgoingProxy: true})
 	if err != nil {
 		return 0, err
 	}
@@ -93,7 +93,7 @@ func StreamServerRunStream(streamID string, channelID string, opt *ChannelST) (i
 	/*
 		Example wait codec
 	*/
-  var videoIDX int
+	var videoIDX int
 
 	if RTSPClient.WaitCodec {
 		WaitCodec = true
@@ -101,12 +101,12 @@ func StreamServerRunStream(streamID string, channelID string, opt *ChannelST) (i
 		if len(RTSPClient.CodecData) > 0 {
 			Storage.StreamChannelCodecsUpdate(streamID, channelID, RTSPClient.CodecData, RTSPClient.SDPRaw)
 		}
-			for i, codec := range RTSPClient.CodecData {
-		
-		if codec.Type().IsVideo() {
-			videoIDX = i
+		for i, codec := range RTSPClient.CodecData {
+
+			if codec.Type().IsVideo() {
+				videoIDX = i
+			}
 		}
-	}
 	}
 	log.WithFields(logrus.Fields{
 		"module":  "core",
@@ -174,7 +174,6 @@ func StreamServerRunStream(streamID string, channelID string, opt *ChannelST) (i
 				start = true
 			}
 
-
 			var FrameDecoderSingle *ffmpeg.VideoDecoder
 
 			FrameDecoderSingle, err = ffmpeg.NewVideoDecoder(RTSPClient.CodecData[videoIDX].(av.VideoCodecData))
@@ -185,14 +184,14 @@ func StreamServerRunStream(streamID string, channelID string, opt *ChannelST) (i
 			if packetAV.IsKeyFrame {
 				//sample single frame decode encode to jpeg save on disk //
 				if pic, err := FrameDecoderSingle.DecodeSingle(packetAV.Data); err == nil && pic != nil {
-					if out, err := os.Create("./output-"+ streamID + "-"+".jpg" ); err == nil {
+					if out, err := os.Create("./output-" + streamID + "-" + ".jpg"); err == nil {
 						if err = jpeg.Encode(out, &pic.Image, nil); err == nil {
-							logrus.Print("image save !" + out.Name() )
+							logrus.Print("image save !" + out.Name())
 						}
 					}
 				}
 			}
-			
+
 			/*
 				FPS mode probe
 			*/
@@ -217,6 +216,7 @@ func StreamServerRunStream(streamID string, channelID string, opt *ChannelST) (i
 		}
 	}
 }
+
 func StreamServerRunStreamRTMP(streamID string, channelID string, opt *ChannelST) (int, error) {
 	keyTest := time.NewTimer(20 * time.Second)
 	checkClients := time.NewTimer(20 * time.Second)
@@ -347,39 +347,36 @@ func StreamServerRunStreamRTMP(streamID string, channelID string, opt *ChannelST
 	}
 }
 
-
-func GetImageFromDisk(c *gin.Context){
+func GetImageFromDisk(c *gin.Context) {
 
 	uuid := c.Params.ByName("uuid")
 
-	fileBytes, err := ioutil.ReadFile("output-"+ uuid + "-.jpg")
+	fileBytes, err := ioutil.ReadFile("output-" + uuid + "-.jpg")
 	if err != nil {
 		panic(err)
 	}
 
-b64 :=ConvertToBase64(fileBytes)
+	b64 := ConvertToBase64(fileBytes)
 
-		if err != nil {
+	if err != nil {
 		c.IndentedJSON(500, Message{Status: 0, Payload: err.Error()})
 		return
 	}
 
-	
-	
-  c.JSON(200,gin.H{
-          "image":b64,
-    })
-	
-	}
+	c.JSON(200, gin.H{
+		"image": b64,
+	})
+
+}
 
 // Takes bytes and returns encoded base64 string
-func toBase64(b[] byte) string {
-        return base64.StdEncoding.EncodeToString(b)
-    }
+func toBase64(b []byte) string {
+	return base64.StdEncoding.EncodeToString(b)
+}
 
-	// Takes Image and converts returns it base64 string
+// Takes Image and converts returns it base64 string
 func ConvertToBase64(imgByte []byte) string {
-   
-    bs64string:= "data:image/jpeg;base64," + toBase64(imgByte)
-    return bs64string
+
+	bs64string := "data:image/jpeg;base64," + toBase64(imgByte)
+	return bs64string
 }
