@@ -7,7 +7,7 @@ build:
 	@echo "$(P) build"
 	GO111MODULE=on go build *.go
 
-run:
+dev:
 	@echo "$(P) run"
 	GO111MODULE=on go run *.go
 
