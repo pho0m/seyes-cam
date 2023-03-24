@@ -19,6 +19,562 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-12">
+      <h1 id="rtsptoweb-share-you-ip-camera-to-world-">RTSPtoWeb share you ip camera to world!</h1>
+<p>RTSPtoWeb converts your RTSP streams to formats consumable in a web browser
+like MSE (Media Source Extensions), WebRTC, or HLS. It&#39;s fully native Golang
+without the use of FFmpeg or GStreamer!</p>
+<h2 id="table-of-contents">Table of Contents</h2>
+<ul>
+<li><a href="#installation">Installation</a></li>
+<li><a href="#configuration">Configuration</a></li>
+<li><a href="#command-line">Command-line</a></li>
+<li><a href="#api-documentation">API documentation</a></li>
+<li><a href="#Limitations">Limitations</a></li>
+<li><a href="#Performance">Performance</a></li>
+<li><a href="#Authors">Authors</a></li>
+<li><a href="#license">License</a></li>
+</ul>
+<h2 id="installation">Installation</h2>
+<h3 id="installation-from-source">Installation from source</h3>
+<ol>
+<li>Download source<pre><code class="lang-bash">$ git <span class="hljs-keyword">clone</span> <span class="hljs-title">https</span>://github.com/deepch/RTSPtoWeb
+</code></pre>
+</li>
+<li>CD to Directory<pre><code class="lang-bash"> $ <span class="hljs-built_in">cd</span> RTSPtoWeb/
+</code></pre>
+</li>
+<li>Test Run<pre><code class="lang-bash"> $ GO111MODULE=<span class="hljs-keyword">on</span> go <span class="hljs-built_in">run</span> *.go
+</code></pre>
+</li>
+<li>Open Browser<pre><code class="lang-bash"> <span class="hljs-built_in">open</span> web browser http:<span class="hljs-comment">//127.0.0.1:8083 work chrome, safari, firefox</span>
+</code></pre>
+</li>
+</ol>
+<h2 id="installation-from-docker">Installation from docker</h2>
+<ol>
+<li>Run docker container<pre><code class="lang-bash"> $ docker <span class="hljs-built_in">run</span> <span class="hljs-comment">--name rtsp-to-web --network host ghcr.io/deepch/rtsptoweb:latest</span>
+</code></pre>
+</li>
+<li>Open Browser<pre><code class="lang-bash"> <span class="hljs-built_in">open</span> web browser <span class="hljs-keyword">http</span>://<span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">8083</span> <span class="hljs-keyword">in</span> chrome, safari, firefox
+</code></pre>
+</li>
+</ol>
+<p>You may override the <a href="#example-configjson">configuration</a> <code>/PATH_TO_CONFIG/config.json</code> and mount as a docker volume:</p>
+<pre><code class="lang-bash">$ docker run --name rtsp-to-web \
+    -v <span class="hljs-regexp">/PATH_TO_CONFIG/</span>config.<span class="hljs-string">json:</span><span class="hljs-regexp">/config/</span>config.json \
+    --network host \
+    ghcr.io<span class="hljs-regexp">/deepch/</span><span class="hljs-string">rtsptoweb:</span>latest
+</code></pre>
+<h2 id="configuration">Configuration</h2>
+<h3 id="server-settings">Server settings</h3>
+<pre><code class="lang-text">debug           - enable debug output
+log_level       - log level (trace, debug, info, <span class="hljs-literal">warning</span>, <span class="hljs-literal">error</span>, fatal, <span class="hljs-keyword">or</span> panic)
+
+http_demo       - serve static files
+http_debug      - debug http api server
+http_login      - http auth login
+http_password   - http auth password
+http_port       - http server <span class="hljs-keyword">port</span>
+http_dir        - path <span class="hljs-keyword">to</span> serve static files from
+ice_servers     - <span class="hljs-keyword">array</span> <span class="hljs-keyword">of</span> servers <span class="hljs-keyword">to</span> <span class="hljs-keyword">use</span> <span class="hljs-keyword">for</span> STUN/TURN
+ice_username    - username <span class="hljs-keyword">to</span> <span class="hljs-keyword">use</span> <span class="hljs-keyword">for</span> STUN/TURN
+ice_credential  - credential <span class="hljs-keyword">to</span> <span class="hljs-keyword">use</span> <span class="hljs-keyword">for</span> STUN/TURN
+webrtc_port_min - minimum WebRTC <span class="hljs-keyword">port</span> <span class="hljs-keyword">to</span> <span class="hljs-keyword">use</span> (UDP)
+webrtc_port_max - maximum WebRTC <span class="hljs-keyword">port</span> <span class="hljs-keyword">to</span> <span class="hljs-keyword">use</span> (UDP)
+
+https
+https_auto_tls
+https_auto_tls_name
+https_cert
+https_key
+https_port
+
+rtsp_port       - rtsp server <span class="hljs-keyword">port</span>
+</code></pre>
+<h3 id="stream-settings">Stream settings</h3>
+<pre><code class="lang-text"><span class="hljs-built_in">name</span>            - stream <span class="hljs-built_in">name</span>
+</code></pre>
+<h3 id="channel-settings">Channel settings</h3>
+<pre><code class="lang-text">name            - channel name
+url             - channel rtsp url
+on_demand       - stream mode static (<span class="hljs-keyword">run</span> any <span class="hljs-built_in">time</span>) <span class="hljs-keyword">or</span> ondemand (<span class="hljs-keyword">run</span> only has viewers)
+<span class="hljs-keyword">debug</span>           - <span class="hljs-keyword">enable</span> <span class="hljs-keyword">debug</span> <span class="hljs-keyword">output</span> (RTSP client)
+audio           - <span class="hljs-keyword">enable</span> audio
+status          - default stream status
+</code></pre>
+<h4 id="authorization-play-video">Authorization play video</h4>
+<p>1 - enable config</p>
+<pre><code class="lang-text"><span class="hljs-string">"token"</span>: {
+<span class="hljs-string">"enable"</span>: <span class="hljs-literal">true</span>,
+<span class="hljs-string">"backend"</span>: <span class="hljs-string">"http://127.0.0.1/file.php"</span>
+}
+</code></pre>
+<p>2 - try</p>
+<pre><code class="lang-text">rtsp:<span class="hljs-regexp">//</span><span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">5541</span><span class="hljs-regexp">/demo/</span><span class="hljs-number">0</span>?token=you_key
+</code></pre>
+<p>file.php need response json</p>
+<pre><code class="lang-text">   <span class="hljs-built_in">status</span>: <span class="hljs-string">"1"</span> <span class="hljs-keyword">or</span> <span class="hljs-string">"0"</span>
+</code></pre>
+<h4 id="rtsp-pull-modes">RTSP pull modes</h4>
+<ul>
+<li><strong>on demand</strong> (on_demand=true) - only pull video from the source when there&#39;s a viewer</li>
+<li><strong>static</strong> (on_demand=false) - pull video from the source constantly</li>
+</ul>
+<h3 id="example-config-json">Example config.json</h3>
+<pre><code class="lang-json">{
+  <span class="hljs-attr">"server"</span>: {
+    <span class="hljs-attr">"debug"</span>: <span class="hljs-literal">true</span>,
+    <span class="hljs-attr">"log_level"</span>: <span class="hljs-string">"info"</span>,
+    <span class="hljs-attr">"http_demo"</span>: <span class="hljs-literal">true</span>,
+    <span class="hljs-attr">"http_debug"</span>: <span class="hljs-literal">false</span>,
+    <span class="hljs-attr">"http_login"</span>: <span class="hljs-string">"demo"</span>,
+    <span class="hljs-attr">"http_password"</span>: <span class="hljs-string">"demo"</span>,
+    <span class="hljs-attr">"http_port"</span>: <span class="hljs-string">":8083"</span>,
+    <span class="hljs-attr">"ice_servers"</span>: [<span class="hljs-string">"stun:stun.l.google.com:19302"</span>],
+    <span class="hljs-attr">"rtsp_port"</span>: <span class="hljs-string">":5541"</span>
+  },
+  <span class="hljs-attr">"streams"</span>: {
+    <span class="hljs-attr">"demo1"</span>: {
+      <span class="hljs-attr">"name"</span>: <span class="hljs-string">"test video stream 1"</span>,
+      <span class="hljs-attr">"channels"</span>: {
+        <span class="hljs-attr">"0"</span>: {
+          <span class="hljs-attr">"name"</span>: <span class="hljs-string">"ch1"</span>,
+          <span class="hljs-attr">"url"</span>: <span class="hljs-string">"rtsp://admin:admin@YOU_CAMERA_IP/uri"</span>,
+          <span class="hljs-attr">"on_demand"</span>: <span class="hljs-literal">true</span>,
+          <span class="hljs-attr">"debug"</span>: <span class="hljs-literal">false</span>,
+          <span class="hljs-attr">"audio"</span>: <span class="hljs-literal">true</span>,
+          <span class="hljs-attr">"status"</span>: <span class="hljs-number">0</span>
+        },
+        <span class="hljs-attr">"1"</span>: {
+          <span class="hljs-attr">"name"</span>: <span class="hljs-string">"ch2"</span>,
+          <span class="hljs-attr">"url"</span>: <span class="hljs-string">"rtsp://admin:admin@YOU_CAMERA_IP/uri"</span>,
+          <span class="hljs-attr">"on_demand"</span>: <span class="hljs-literal">true</span>,
+          <span class="hljs-attr">"debug"</span>: <span class="hljs-literal">false</span>,
+          <span class="hljs-attr">"audio"</span>: <span class="hljs-literal">true</span>,
+          <span class="hljs-attr">"status"</span>: <span class="hljs-number">0</span>
+        }
+      }
+    },
+    <span class="hljs-attr">"demo2"</span>: {
+      <span class="hljs-attr">"name"</span>: <span class="hljs-string">"test video stream 2"</span>,
+      <span class="hljs-attr">"channels"</span>: {
+        <span class="hljs-attr">"0"</span>: {
+          <span class="hljs-attr">"name"</span>: <span class="hljs-string">"ch1"</span>,
+          <span class="hljs-attr">"url"</span>: <span class="hljs-string">"rtsp://admin:admin@YOU_CAMERA_IP/uri"</span>,
+          <span class="hljs-attr">"on_demand"</span>: <span class="hljs-literal">true</span>,
+          <span class="hljs-attr">"debug"</span>: <span class="hljs-literal">false</span>,
+          <span class="hljs-attr">"status"</span>: <span class="hljs-number">0</span>
+        },
+        <span class="hljs-attr">"1"</span>: {
+          <span class="hljs-attr">"name"</span>: <span class="hljs-string">"ch2"</span>,
+          <span class="hljs-attr">"url"</span>: <span class="hljs-string">"rtsp://admin:admin@YOU_CAMERA_IP/uri"</span>,
+          <span class="hljs-attr">"on_demand"</span>: <span class="hljs-literal">true</span>,
+          <span class="hljs-attr">"debug"</span>: <span class="hljs-literal">false</span>,
+          <span class="hljs-attr">"status"</span>: <span class="hljs-number">0</span>
+        }
+      }
+    }
+  },
+  <span class="hljs-attr">"channel_defaults"</span>: {
+    <span class="hljs-attr">"on_demand"</span>: <span class="hljs-literal">true</span>
+  }
+}
+</code></pre>
+<h2 id="command-line">Command-line</h2>
+<h3 id="use-help-to-show-available-args">Use help to show available args</h3>
+<pre><code class="lang-bash">./RTSPtoWeb <span class="hljs-comment">--help</span>
+</code></pre>
+<h4 id="response">Response</h4>
+<pre><code class="lang-bash">Usage of ./RTSPtoWeb:
+  -<span class="hljs-keyword">config</span> <span class="hljs-keyword">string</span>
+        <span class="hljs-keyword">config</span> patch (/etc/server/<span class="hljs-keyword">config</span><span class="hljs-variable">.json</span> <span class="hljs-keyword">or</span> <span class="hljs-keyword">config</span><span class="hljs-variable">.json</span>) (<span class="hljs-keyword">default</span> <span class="hljs-string">"config.json"</span>)
+  -debug
+        set debug mode (<span class="hljs-keyword">default</span> true)
+</code></pre>
+<h2 id="api-documentation">API documentation</h2>
+<p>See the <a href="/docs/api.md">API docs</a></p>
+<h2 id="limitations">Limitations</h2>
+<p>Video Codecs Supported: H264 all profiles</p>
+<p>Audio Codecs Supported: no</p>
+<h2 id="performance">Performance</h2>
+<pre><code class="lang-bash">CPU usage ≈<span class="hljs-number">0.2</span>%<span class="hljs-number">-1</span>% one (thread) core cpu intel core i7 per stream
+</code></pre>
+<h2 id="authors">Authors</h2>
+<ul>
+<li><strong>Andrey Semochkin</strong> - <em>Initial work video</em> - <a href="https://github.com/deepch">deepch</a></li>
+<li><strong>Dmitriy Vladykin</strong> - <em>Initial work web UI</em> - <a href="https://github.com/vdalex25">vdalex25</a></li>
+</ul>
+<p>See also the list of <a href="https://github.com/deepch/RTSPtoWeb/contributors">contributors</a> who participated in this project.</p>
+<h2 id="license">License</h2>
+<p>This project licensed. License - see the <a href="LICENSE.md">LICENSE.md</a> file for details</p>
+<p><a href="https://github.com/pion/webrtc">webrtc</a> follows license MIT <a href="https://raw.githubusercontent.com/pion/webrtc/master/LICENSE">license</a>.</p>
+<p><a href="https://github.com/nareix/joy4">joy4</a> follows license MIT <a href="https://raw.githubusercontent.com/nareix/joy4/master/LICENSE">license</a>.</p>
+<h2 id="other-example">Other Example</h2>
+<p>Examples of working with video on golang</p>
+<ul>
+<li><a href="https://github.com/deepch/RTSPtoWeb">RTSPtoWeb</a></li>
+<li><a href="https://github.com/deepch/RTSPtoWebRTC">RTSPtoWebRTC</a></li>
+<li><a href="https://github.com/deepch/RTSPtoWSMP4f">RTSPtoWSMP4f</a></li>
+<li><a href="https://github.com/deepch/RTSPtoImage">RTSPtoImage</a></li>
+<li><a href="https://github.com/deepch/RTSPtoHLS">RTSPtoHLS</a></li>
+<li><a href="https://github.com/deepch/RTSPtoHLSLL">RTSPtoHLSLL</a></li>
+</ul>
+<p><a href="https://www.paypal.me/AndreySemochkin"><img src="https://ionicabizau.github.io/badges/paypal.svg" alt="paypal.me/AndreySemochkin"></a> - You can make one-time donations via PayPal. I&#39;ll probably buy a <del>coffee</del> tea. :tea:</p>
+
+
+
+<h1 id="rtsptoweb-api">RTSPtoWeb API</h1>
+<ul>
+<li><a href="#streams">Streams</a><ul>
+<li><a href="#list-streams">List streams</a></li>
+<li><a href="#add-a-stream">Add a stream</a></li>
+<li><a href="#update-a-stream">Update a stream</a></li>
+<li><a href="#reload-a-stream">Reload a stream</a></li>
+<li><a href="#get-stream-info">Get stream info</a></li>
+<li><a href="#delete-a-stream">Delete a stream</a></li>
+</ul>
+</li>
+<li><a href="#channels">Channels</a><ul>
+<li><a href="#add-a-channel-to-a-stream">Add a channel to a stream</a></li>
+<li><a href="#update-a-stream-channel">Update a stream channel</a></li>
+<li><a href="#reload-a-stream-channel">Reload a stream channel</a></li>
+<li><a href="#get-stream-channel-info">Get stream channel info</a></li>
+<li><a href="#get-stream-channel-codec">Get stream channel codec</a></li>
+<li><a href="#delete-a-stream-channel">Delete a stream channel</a></li>
+</ul>
+</li>
+<li><a href="#video-endpoints">Video endpoints</a><ul>
+<li><a href="#hls">HLS</a></li>
+<li><a href="#hls-ll">HLS-LL</a></li>
+<li><a href="#mse">MSE</a></li>
+<li><a href="#webrtc">WebRTC</a></li>
+<li><a href="#rtsp">RTSP</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="streams">Streams</h2>
+<h3 id="list-streams">List streams</h3>
+<h4 id="request">Request</h4>
+<p><code>GET /streams</code></p>
+<pre><code class="lang-bash">curl <span class="hljs-string">http:</span><span class="hljs-comment">//demo:demo@127.0.0.1:8083/streams</span>
+</code></pre>
+<h4 id="response">Response</h4>
+<pre><code class="lang-json">{
+    <span class="hljs-attr">"status"</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-attr">"payload"</span>: {
+        <span class="hljs-attr">"demo1"</span>: {
+            <span class="hljs-attr">"name"</span>: <span class="hljs-string">"test video"</span>,
+            <span class="hljs-attr">"channels"</span>: {
+                <span class="hljs-attr">"0"</span>: {
+                    <span class="hljs-attr">"name"</span>: <span class="hljs-string">"ch1"</span>,
+                    <span class="hljs-attr">"url"</span>: <span class="hljs-string">"rtsp://admin:admin@{YOUR_CAMERA_IP}/uri"</span>,
+                    <span class="hljs-attr">"on_demand"</span>: <span class="hljs-literal">true</span>,
+                    <span class="hljs-attr">"debug"</span>: <span class="hljs-literal">false</span>,
+                    <span class="hljs-attr">"status"</span>: <span class="hljs-number">0</span>
+                },
+                <span class="hljs-attr">"1"</span>: {
+                    <span class="hljs-attr">"name"</span>: <span class="hljs-string">"ch2"</span>,
+                    <span class="hljs-attr">"url"</span>: <span class="hljs-string">"rtsp://admin:admin@{YOUR_CAMERA_IP}/uri"</span>,
+                    <span class="hljs-attr">"on_demand"</span>: <span class="hljs-literal">true</span>,
+                    <span class="hljs-attr">"debug"</span>: <span class="hljs-literal">false</span>,
+                    <span class="hljs-attr">"status"</span>: <span class="hljs-number">0</span>
+                }
+            }
+        },
+        <span class="hljs-attr">"demo2"</span>: {
+            <span class="hljs-attr">"name"</span>: <span class="hljs-string">"test video"</span>,
+            <span class="hljs-attr">"channels"</span>: {
+                <span class="hljs-attr">"0"</span>: {
+                    <span class="hljs-attr">"name"</span>: <span class="hljs-string">"ch1"</span>,
+                    <span class="hljs-attr">"url"</span>: <span class="hljs-string">"rtsp://admin:admin@{YOUR_CAMERA_IP}/uri"</span>,
+                    <span class="hljs-attr">"on_demand"</span>: <span class="hljs-literal">true</span>,
+                    <span class="hljs-attr">"debug"</span>: <span class="hljs-literal">false</span>,
+                    <span class="hljs-attr">"status"</span>: <span class="hljs-number">0</span>
+                },
+                <span class="hljs-attr">"1"</span>: {
+                    <span class="hljs-attr">"name"</span>: <span class="hljs-string">"ch2"</span>,
+                    <span class="hljs-attr">"url"</span>: <span class="hljs-string">"rtsp://admin:admin@{YOUR_CAMERA_IP}/uri"</span>,
+                    <span class="hljs-attr">"on_demand"</span>: <span class="hljs-literal">true</span>,
+                    <span class="hljs-attr">"debug"</span>: <span class="hljs-literal">false</span>,
+                    <span class="hljs-attr">"status"</span>: <span class="hljs-number">0</span>
+                }
+            }
+        }
+    }
+}
+</code></pre>
+<h3 id="add-a-stream">Add a stream</h3>
+<h4 id="request">Request</h4>
+<p><code>POST /stream/{STREAM_ID}/add</code></p>
+<pre><code class="lang-bash">curl \
+  <span class="hljs-comment">--header "Content-Type: application/json" \</span>
+  <span class="hljs-comment">--request POST \</span>
+  <span class="hljs-comment">--data '{</span>
+              <span class="hljs-string">"name"</span>: <span class="hljs-string">"test video"</span>,
+              <span class="hljs-string">"channels"</span>: {
+                  <span class="hljs-string">"0"</span>: {
+                      <span class="hljs-string">"name"</span>: <span class="hljs-string">"ch1"</span>,
+                      <span class="hljs-string">"url"</span>: <span class="hljs-string">"rtsp://admin:admin@{YOUR_CAMERA_IP}/uri"</span>,
+                      <span class="hljs-string">"on_demand"</span>: <span class="hljs-literal">true</span>,
+                      <span class="hljs-string">"debug"</span>: <span class="hljs-literal">false</span>,
+                      <span class="hljs-string">"status"</span>: <span class="hljs-number">0</span>
+                  },
+                  <span class="hljs-string">"1"</span>: {
+                      <span class="hljs-string">"name"</span>: <span class="hljs-string">"ch2"</span>,
+                      <span class="hljs-string">"url"</span>: <span class="hljs-string">"rtsp://admin:admin@{YOUR_CAMERA_IP}/uri"</span>,
+                      <span class="hljs-string">"on_demand"</span>: <span class="hljs-literal">true</span>,
+                      <span class="hljs-string">"debug"</span>: <span class="hljs-literal">false</span>,
+                      <span class="hljs-string">"status"</span>: <span class="hljs-number">0</span>
+                  }
+              }
+          }' \
+  http://demo:demo@<span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">8083</span>/stream/{STREAM_ID}/add
+</code></pre>
+<h4 id="response">Response</h4>
+<pre><code class="lang-json">{
+    <span class="hljs-attr">"status"</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-attr">"payload"</span>: <span class="hljs-string">"success"</span>
+}
+</code></pre>
+<h3 id="update-a-stream">Update a stream</h3>
+<h4 id="request">Request</h4>
+<p><code>POST /stream/{STREAM_ID}/edit</code></p>
+<pre><code class="lang-bash">curl \
+  <span class="hljs-comment">--header "Content-Type: application/json" \</span>
+  <span class="hljs-comment">--request POST \</span>
+  <span class="hljs-comment">--data '{</span>
+              <span class="hljs-string">"name"</span>: <span class="hljs-string">"test video"</span>,
+              <span class="hljs-string">"channels"</span>: {
+                  <span class="hljs-string">"0"</span>: {
+                      <span class="hljs-string">"name"</span>: <span class="hljs-string">"ch1"</span>,
+                      <span class="hljs-string">"url"</span>: <span class="hljs-string">"rtsp://admin:admin@{YOUR_CAMERA_IP}/uri"</span>,
+                      <span class="hljs-string">"on_demand"</span>: <span class="hljs-literal">true</span>,
+                      <span class="hljs-string">"debug"</span>: <span class="hljs-literal">false</span>,
+                      <span class="hljs-string">"status"</span>: <span class="hljs-number">0</span>
+                  },
+                  <span class="hljs-string">"1"</span>: {
+                      <span class="hljs-string">"name"</span>: <span class="hljs-string">"ch2"</span>,
+                      <span class="hljs-string">"url"</span>: <span class="hljs-string">"rtsp://admin:admin@{YOUR_CAMERA_IP}/uri"</span>,
+                      <span class="hljs-string">"on_demand"</span>: <span class="hljs-literal">true</span>,
+                      <span class="hljs-string">"debug"</span>: <span class="hljs-literal">false</span>,
+                      <span class="hljs-string">"status"</span>: <span class="hljs-number">0</span>
+                  }
+              }
+          }' \
+  http://demo:demo@<span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">8083</span>/stream/{STREAM_ID}/edit
+</code></pre>
+<h4 id="response">Response</h4>
+<pre><code class="lang-json">{
+    <span class="hljs-attr">"status"</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-attr">"payload"</span>: <span class="hljs-string">"success"</span>
+}
+</code></pre>
+<h3 id="reload-a-stream">Reload a stream</h3>
+<h4 id="request">Request</h4>
+<p><code>GET /stream/{STREAM_ID}/reload</code></p>
+<pre><code class="lang-bash">curl http:<span class="hljs-regexp">//</span>demo:demo@<span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">8083</span><span class="hljs-regexp">/stream/</span>{STREAM_ID}<span class="hljs-regexp">/reload</span>
+</code></pre>
+<h4 id="response">Response</h4>
+<pre><code class="lang-json">{
+    <span class="hljs-attr">"status"</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-attr">"payload"</span>: <span class="hljs-string">"success"</span>
+}
+</code></pre>
+<h3 id="get-stream-info">Get stream info</h3>
+<h4 id="request">Request</h4>
+<p><code>GET /stream/{STREAM_ID}/info</code></p>
+<pre><code class="lang-bash">curl http:<span class="hljs-regexp">//</span>demo:demo@<span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">8083</span><span class="hljs-regexp">/stream/</span>{STREAM_ID}<span class="hljs-regexp">/info</span>
+</code></pre>
+<h4 id="response">Response</h4>
+<pre><code class="lang-json">{
+    <span class="hljs-attr">"status"</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-attr">"payload"</span>: {
+        <span class="hljs-attr">"name"</span>: <span class="hljs-string">"test video"</span>,
+        <span class="hljs-attr">"channels"</span>: {
+            <span class="hljs-attr">"0"</span>: {
+                <span class="hljs-attr">"name"</span>: <span class="hljs-string">"ch1"</span>,
+                <span class="hljs-attr">"url"</span>: <span class="hljs-string">"rtsp://admin:admin@{YOUR_CAMERA_IP}/uri"</span>,
+                <span class="hljs-attr">"on_demand"</span>: <span class="hljs-literal">true</span>,
+                <span class="hljs-attr">"debug"</span>: <span class="hljs-literal">false</span>,
+                <span class="hljs-attr">"status"</span>: <span class="hljs-number">0</span>
+            },
+            <span class="hljs-attr">"1"</span>: {
+                <span class="hljs-attr">"name"</span>: <span class="hljs-string">"ch2"</span>,
+                <span class="hljs-attr">"url"</span>: <span class="hljs-string">"rtsp://admin:admin@{YOUR_CAMERA_IP}/uri"</span>,
+                <span class="hljs-attr">"on_demand"</span>: <span class="hljs-literal">true</span>,
+                <span class="hljs-attr">"debug"</span>: <span class="hljs-literal">false</span>,
+                <span class="hljs-attr">"status"</span>: <span class="hljs-number">0</span>
+            }
+        }
+    }
+}
+</code></pre>
+<h3 id="delete-a-stream">Delete a stream</h3>
+<h4 id="request">Request</h4>
+<p><code>GET /stream/{STREAM_ID}/delete</code></p>
+<pre><code class="lang-bash">curl http:<span class="hljs-regexp">//</span>demo:demo@<span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">8083</span><span class="hljs-regexp">/stream/</span>{STREAM_ID}<span class="hljs-regexp">/delete</span>
+</code></pre>
+<h4 id="response">Response</h4>
+<pre><code class="lang-json">{
+    <span class="hljs-attr">"status"</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-attr">"payload"</span>: <span class="hljs-string">"success"</span>
+}
+</code></pre>
+<h2 id="channels">Channels</h2>
+<h3 id="add-a-channel-to-a-stream">Add a channel to a stream</h3>
+<h4 id="request">Request</h4>
+<p><code>POST /stream/{STREAM_ID}/channel/{CHANNEL_ID}/add</code></p>
+<pre><code class="lang-bash">curl \
+  <span class="hljs-comment">--header "Content-Type: application/json" \</span>
+  <span class="hljs-comment">--request POST \</span>
+  <span class="hljs-comment">--data '{</span>
+              <span class="hljs-string">"name"</span>: <span class="hljs-string">"ch4"</span>,
+              <span class="hljs-string">"url"</span>: <span class="hljs-string">"rtsp://admin:admin@{YOUR_CAMERA_IP}/uri"</span>,
+              <span class="hljs-string">"on_demand"</span>: <span class="hljs-literal">false</span>,
+              <span class="hljs-string">"debug"</span>: <span class="hljs-literal">false</span>,
+              <span class="hljs-string">"status"</span>: <span class="hljs-number">0</span>
+          }' \
+  http://demo:demo@<span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">8083</span>/stream/{STREAM_ID}/channel/{CHANNEL_ID}/add
+</code></pre>
+<h4 id="response">Response</h4>
+<pre><code class="lang-json">{
+    <span class="hljs-attr">"status"</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-attr">"payload"</span>: <span class="hljs-string">"success"</span>
+}
+</code></pre>
+<h3 id="update-a-stream-channel">Update a stream channel</h3>
+<h4 id="request">Request</h4>
+<p><code>POST /stream/{STREAM_ID}/channel/{CHANNEL_ID}/edit</code></p>
+<pre><code class="lang-bash">curl \
+  <span class="hljs-comment">--header "Content-Type: application/json" \</span>
+  <span class="hljs-comment">--request POST \</span>
+  <span class="hljs-comment">--data '{</span>
+              <span class="hljs-string">"name"</span>: <span class="hljs-string">"ch4"</span>,
+              <span class="hljs-string">"url"</span>: <span class="hljs-string">"rtsp://admin:admin@{YOUR_CAMERA_IP}/uri"</span>,
+              <span class="hljs-string">"on_demand"</span>: <span class="hljs-literal">true</span>,
+              <span class="hljs-string">"debug"</span>: <span class="hljs-literal">false</span>,
+              <span class="hljs-string">"status"</span>: <span class="hljs-number">0</span>
+          }' \
+  http://demo:demo@<span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">8083</span>/stream/{STREAM_ID}/channel/{CHANNEL_ID}/edit
+</code></pre>
+<h4 id="response">Response</h4>
+<pre><code class="lang-json">{
+    <span class="hljs-attr">"status"</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-attr">"payload"</span>: <span class="hljs-string">"success"</span>
+}
+</code></pre>
+<h3 id="reload-a-stream-channel">Reload a stream channel</h3>
+<h4 id="request">Request</h4>
+<p><code>GET /stream/{STREAM_ID}/channel/{CHANNEL_ID}/reload</code></p>
+<pre><code class="lang-bash">curl http:<span class="hljs-regexp">//</span>demo:demo@<span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">8083</span><span class="hljs-regexp">/stream/</span>{STREAM_ID}<span class="hljs-regexp">/channel/</span>{CHANNEL_ID}<span class="hljs-regexp">/reload</span>
+</code></pre>
+<h4 id="response">Response</h4>
+<pre><code class="lang-json">{
+    <span class="hljs-attr">"status"</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-attr">"payload"</span>: <span class="hljs-string">"success"</span>
+}
+</code></pre>
+<h3 id="get-stream-channel-info">Get stream channel info</h3>
+<h4 id="request">Request</h4>
+<p><code>GET /stream/{STREAM_ID}/channel/{CHANNEL_ID}/info</code></p>
+<pre><code class="lang-bash">curl http:<span class="hljs-regexp">//</span>demo:demo@<span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">8083</span><span class="hljs-regexp">/stream/</span>{STREAM_ID}<span class="hljs-regexp">/channel/</span>{CHANNEL_ID}<span class="hljs-regexp">/info</span>
+</code></pre>
+<h4 id="response">Response</h4>
+<pre><code class="lang-json">{
+    <span class="hljs-attr">"status"</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-attr">"payload"</span>: {
+        <span class="hljs-attr">"name"</span>: <span class="hljs-string">"ch4"</span>,
+        <span class="hljs-attr">"url"</span>: <span class="hljs-string">"rtsp://admin:admin@{YOUR_CAMERA_IP}/uri"</span>,
+        <span class="hljs-attr">"on_demand"</span>: <span class="hljs-literal">false</span>,
+        <span class="hljs-attr">"debug"</span>: <span class="hljs-literal">false</span>,
+        <span class="hljs-attr">"status"</span>: <span class="hljs-number">1</span>
+    }
+}
+</code></pre>
+<h3 id="get-stream-channel-codec">Get stream channel codec</h3>
+<h4 id="request">Request</h4>
+<p><code>GET /stream/{STREAM_ID}/{CHANNEL_ID}/codec</code></p>
+<pre><code class="lang-bash">curl http:<span class="hljs-regexp">//</span>demo:demo@<span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">8083</span><span class="hljs-regexp">/stream/</span>{STREAM_ID}<span class="hljs-regexp">/{CHANNEL_ID}/</span>codec
+</code></pre>
+<h4 id="response">Response</h4>
+<pre><code class="lang-json">{
+    <span class="hljs-attr">"status"</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-attr">"payload"</span>: [
+        {
+            <span class="hljs-attr">"Record"</span>: <span class="hljs-string">"AU0AFP/hABRnTQAUlahQfoQAAAMABAAAAwCiEAEABGjuPIA="</span>,
+            <span class="hljs-attr">"RecordInfo"</span>: {
+                <span class="hljs-attr">"AVCProfileIndication"</span>: <span class="hljs-number">77</span>,
+                <span class="hljs-attr">"ProfileCompatibility"</span>: <span class="hljs-number">0</span>,
+                <span class="hljs-attr">"AVCLevelIndication"</span>: <span class="hljs-number">20</span>,
+                <span class="hljs-attr">"LengthSizeMinusOne"</span>: <span class="hljs-number">3</span>,
+                <span class="hljs-attr">"SPS"</span>: [
+                    <span class="hljs-string">"Z00AFJWoUH6EAAADAAQAAAMAohA="</span>
+                ],
+                <span class="hljs-attr">"PPS"</span>: [
+                    <span class="hljs-string">"aO48gA=="</span>
+                ]
+            },
+            <span class="hljs-attr">"SPSInfo"</span>: {
+                <span class="hljs-attr">"ProfileIdc"</span>: <span class="hljs-number">77</span>,
+                <span class="hljs-attr">"LevelIdc"</span>: <span class="hljs-number">20</span>,
+                <span class="hljs-attr">"MbWidth"</span>: <span class="hljs-number">20</span>,
+                <span class="hljs-attr">"MbHeight"</span>: <span class="hljs-number">15</span>,
+                <span class="hljs-attr">"CropLeft"</span>: <span class="hljs-number">0</span>,
+                <span class="hljs-attr">"CropRight"</span>: <span class="hljs-number">0</span>,
+                <span class="hljs-attr">"CropTop"</span>: <span class="hljs-number">0</span>,
+                <span class="hljs-attr">"CropBottom"</span>: <span class="hljs-number">0</span>,
+                <span class="hljs-attr">"Width"</span>: <span class="hljs-number">320</span>,
+                <span class="hljs-attr">"Height"</span>: <span class="hljs-number">240</span>
+            }
+        }
+    ]
+}
+</code></pre>
+<h3 id="delete-a-stream-channel">Delete a stream channel</h3>
+<h4 id="request">Request</h4>
+<p><code>GET /stream/{STREAM_ID}/channel/{CHANNEL_ID}/delete</code></p>
+<pre><code class="lang-bash">curl http:<span class="hljs-regexp">//</span>demo:demo@<span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">8083</span><span class="hljs-regexp">/stream/</span>{STREAM_ID}<span class="hljs-regexp">/channel/</span>{CHANNEL_ID}<span class="hljs-regexp">/delete</span>
+</code></pre>
+<h4 id="response">Response</h4>
+<pre><code class="lang-json">{
+    <span class="hljs-attr">"status"</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-attr">"payload"</span>: <span class="hljs-string">"success"</span>
+}
+</code></pre>
+<h2 id="video-endpoints">Video endpoints</h2>
+<h3 id="hls">HLS</h3>
+<p><code>GET /stream/{STREAM_ID}/channel/{CHANNEL_ID}/hls/live/index.m3u8</code></p>
+<pre><code class="lang-bash">curl http:<span class="hljs-regexp">//</span><span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">8083</span><span class="hljs-regexp">/stream/</span>{STREAM_ID}<span class="hljs-regexp">/channel/</span>{CHANNEL_ID}<span class="hljs-regexp">/hls/</span>live<span class="hljs-regexp">/index.m3u8</span>
+</code></pre>
+<pre><code class="lang-bash">ffplay http:<span class="hljs-regexp">//</span><span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">8083</span><span class="hljs-regexp">/stream/</span>{STREAM_ID}<span class="hljs-regexp">/channel/</span>{CHANNEL_ID}<span class="hljs-regexp">/hls/</span>live<span class="hljs-regexp">/index.m3u8</span>
+</code></pre>
+<h3 id="hls-ll">HLS-LL</h3>
+<p><code>GET /stream/{STREAM_ID}/channel/{CHANNEL_ID}/hlsll/live/index.m3u8</code></p>
+<pre><code class="lang-bash">curl http:<span class="hljs-regexp">//</span><span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">8083</span><span class="hljs-regexp">/stream/</span>{STREAM_ID}<span class="hljs-regexp">/channel/</span>{CHANNEL_ID}<span class="hljs-regexp">/hlsll/</span>live<span class="hljs-regexp">/index.m3u8</span>
+</code></pre>
+<pre><code class="lang-bash">ffplay http:<span class="hljs-regexp">//</span><span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">8083</span><span class="hljs-regexp">/stream/</span>{STREAM_ID}<span class="hljs-regexp">/channel/</span>{CHANNEL_ID}<span class="hljs-regexp">/hlsll/</span>live<span class="hljs-regexp">/index.m3u8</span>
+</code></pre>
+<h3 id="mse">MSE</h3>
+<p><code>/stream/{STREAM_ID}/channel/{CHANNEL_ID}/mse?uuid={STREAM_ID}&amp;channel={CHANNEL_ID}</code></p>
+<pre><code><span class="xml">ws://127.0.0.1:8083/stream/</span><span class="hljs-template-variable">{STREAM_ID}</span><span class="xml">/channel/</span><span class="hljs-template-variable">{CHANNEL_ID}</span><span class="xml">/mse?uuid=</span><span class="hljs-template-variable">{STREAM_ID}</span><span class="xml">&amp;channel=</span><span class="hljs-template-variable">{CHANNEL_ID}</span><span class="xml"></span>
+</code></pre><p>NOTE: Use <code>wss</code> for a secure connection.</p>
+<h3 id="webrtc">WebRTC</h3>
+<p><code>/stream/{STREAM_ID}/channel/{CHANNEL_ID}/webrtc</code></p>
+<pre><code>http:<span class="hljs-regexp">//</span><span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">8083</span><span class="hljs-regexp">/stream/</span>{STREAM_ID}<span class="hljs-regexp">/channel/</span>{CHANNEL_ID}<span class="hljs-regexp">/webrtc</span>
+</code></pre><h4 id="request">Request</h4>
+<p>The request is an HTTP <code>POST</code> with a FormData parameter <code>data</code> that is a base64 encoded SDP offer (e.g. <code>v=0...</code>) from a WebRTC client.</p>
+<h4 id="response">Response</h4>
+<p>The response is a base64 encoded SDP Answer.</p>
+<h3 id="rtsp">RTSP</h3>
+<p><code>/{STREAM_ID}/{CHANNEL_ID}</code></p>
+<pre><code><span class="xml">rtsp://127.0.0.1:</span><span class="hljs-template-variable">{RTSP_PORT}</span><span class="xml">/</span><span class="hljs-template-variable">{STREAM_ID}</span><span class="xml">/</span><span class="hljs-template-variable">{CHANNEL_ID}</span><span class="xml"></span>
+</code></pre><pre><code class="lang-bash">ffplay -rtsp_transport tcp rtsp:<span class="hljs-regexp">//</span><span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span><span class="hljs-regexp">/{STREAM_ID}/</span>{CHANNEL_ID}
+</code></pre>
+
+
+
+
+
         <p>
           <a href="https://github.com/deepch/RTSPtoWeb/tree/master/docs/api.md">API documentation</a> is available in the GitHub repository.
         </p>

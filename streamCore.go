@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/base64"
 	"image/jpeg"
+	"path/filepath"
 
 	"io/ioutil"
 	"math"
@@ -158,7 +159,7 @@ func StreamServerRunStream(streamID string, channelID string, opt *ChannelST) (i
 			}
 
 			if packetAV.IsKeyFrame {
-				keyTest.Reset(20 * time.Second)
+				keyTest.Reset(50 * time.Second)
 				if preKeyTS > 0 {
 					Storage.StreamHLSAdd(streamID, channelID, Seq, packetAV.Time-preKeyTS)
 					Seq = []*av.Packet{}
@@ -184,7 +185,10 @@ func StreamServerRunStream(streamID string, channelID string, opt *ChannelST) (i
 			if packetAV.IsKeyFrame {
 				//sample single frame decode encode to jpeg save on disk //
 				if pic, err := FrameDecoderSingle.DecodeSingle(packetAV.Data); err == nil && pic != nil {
-					if out, err := os.Create("./output-" + streamID + "-" + ".jpg"); err == nil {
+					// ttt := time.Now()
+					path := filepath.Join("./storage" + "/output-" + streamID + "-" + ".jpg")
+
+					if out, err := os.Create(path); err == nil {
 						if err = jpeg.Encode(out, &pic.Image, nil); err == nil {
 							logrus.Print("image save !" + out.Name())
 						}
@@ -351,7 +355,7 @@ func GetImageFromDisk(c *gin.Context) {
 
 	uuid := c.Params.ByName("uuid")
 
-	fileBytes, err := ioutil.ReadFile("output-" + uuid + "-.jpg")
+	fileBytes, err := ioutil.ReadFile("./storage" + "/output-" + uuid + "-.jpg")
 	if err != nil {
 		panic(err)
 	}
@@ -366,7 +370,6 @@ func GetImageFromDisk(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"image": b64,
 	})
-
 }
 
 // Takes bytes and returns encoded base64 string
@@ -376,7 +379,5 @@ func toBase64(b []byte) string {
 
 // Takes Image and converts returns it base64 string
 func ConvertToBase64(imgByte []byte) string {
-
-	bs64string := "data:image/jpeg;base64," + toBase64(imgByte)
-	return bs64string
+	return toBase64(imgByte)
 }
