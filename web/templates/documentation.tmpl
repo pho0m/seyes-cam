@@ -46,7 +46,7 @@ without the use of FFmpeg or GStreamer!</p>
 <li>Test Run<pre><code class="lang-bash"> $ GO111MODULE=<span class="hljs-keyword">on</span> go <span class="hljs-built_in">run</span> *.go
 </code></pre>
 </li>
-<li>Open Browser<pre><code class="lang-bash"> <span class="hljs-built_in">open</span> web browser http:<span class="hljs-comment">//127.0.0.1:8083 work chrome, safari, firefox</span>
+<li>Open Browser<pre><code class="lang-bash"> <span class="hljs-built_in">open</span> web browser http:<span class="hljs-comment">//127.0.0.1:9093 work chrome, safari, firefox</span>
 </code></pre>
 </li>
 </ol>
@@ -55,7 +55,7 @@ without the use of FFmpeg or GStreamer!</p>
 <li>Run docker container<pre><code class="lang-bash"> $ docker <span class="hljs-built_in">run</span> <span class="hljs-comment">--name rtsp-to-web --network host ghcr.io/deepch/rtsptoweb:latest</span>
 </code></pre>
 </li>
-<li>Open Browser<pre><code class="lang-bash"> <span class="hljs-built_in">open</span> web browser <span class="hljs-keyword">http</span>://<span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">8083</span> <span class="hljs-keyword">in</span> chrome, safari, firefox
+<li>Open Browser<pre><code class="lang-bash"> <span class="hljs-built_in">open</span> web browser <span class="hljs-keyword">http</span>://<span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">9093</span> <span class="hljs-keyword">in</span> chrome, safari, firefox
 </code></pre>
 </li>
 </ol>
@@ -129,7 +129,7 @@ status          - default stream status
     <span class="hljs-attr">"http_debug"</span>: <span class="hljs-literal">false</span>,
     <span class="hljs-attr">"http_login"</span>: <span class="hljs-string">"demo"</span>,
     <span class="hljs-attr">"http_password"</span>: <span class="hljs-string">"demo"</span>,
-    <span class="hljs-attr">"http_port"</span>: <span class="hljs-string">":8083"</span>,
+    <span class="hljs-attr">"http_port"</span>: <span class="hljs-string">":9093"</span>,
     <span class="hljs-attr">"ice_servers"</span>: [<span class="hljs-string">"stun:stun.l.google.com:19302"</span>],
     <span class="hljs-attr">"rtsp_port"</span>: <span class="hljs-string">":5541"</span>
   },
@@ -256,7 +256,7 @@ status          - default stream status
 <h3 id="list-streams">List streams</h3>
 <h4 id="request">Request</h4>
 <p><code>GET /streams</code></p>
-<pre><code class="lang-bash">curl <span class="hljs-string">http:</span><span class="hljs-comment">//demo:demo@127.0.0.1:8083/streams</span>
+<pre><code class="lang-bash">curl <span class="hljs-string">http:</span><span class="hljs-comment">//demo:demo@127.0.0.1:9093/streams</span>
 </code></pre>
 <h4 id="response">Response</h4>
 <pre><code class="lang-json">{
@@ -328,7 +328,7 @@ status          - default stream status
                   }
               }
           }' \
-  http://demo:demo@<span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">8083</span>/stream/{STREAM_ID}/add
+  http://demo:demo@<span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">9093</span>/stream/{STREAM_ID}/add
 </code></pre>
 <h4 id="response">Response</h4>
 <pre><code class="lang-json">{
@@ -361,7 +361,7 @@ status          - default stream status
                   }
               }
           }' \
-  http://demo:demo@<span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">8083</span>/stream/{STREAM_ID}/edit
+  http://demo:demo@<span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">9093</span>/stream/{STREAM_ID}/edit
 </code></pre>
 <h4 id="response">Response</h4>
 <pre><code class="lang-json">{
@@ -372,7 +372,7 @@ status          - default stream status
 <h3 id="reload-a-stream">Reload a stream</h3>
 <h4 id="request">Request</h4>
 <p><code>GET /stream/{STREAM_ID}/reload</code></p>
-<pre><code class="lang-bash">curl http:<span class="hljs-regexp">//</span>demo:demo@<span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">8083</span><span class="hljs-regexp">/stream/</span>{STREAM_ID}<span class="hljs-regexp">/reload</span>
+<pre><code class="lang-bash">curl http:<span class="hljs-regexp">//</span>demo:demo@<span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">9093</span><span class="hljs-regexp">/stream/</span>{STREAM_ID}<span class="hljs-regexp">/reload</span>
 </code></pre>
 <h4 id="response">Response</h4>
 <pre><code class="lang-json">{
@@ -383,7 +383,7 @@ status          - default stream status
 <h3 id="get-stream-info">Get stream info</h3>
 <h4 id="request">Request</h4>
 <p><code>GET /stream/{STREAM_ID}/info</code></p>
-<pre><code class="lang-bash">curl http:<span class="hljs-regexp">//</span>demo:demo@<span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">8083</span><span class="hljs-regexp">/stream/</span>{STREAM_ID}<span class="hljs-regexp">/info</span>
+<pre><code class="lang-bash">curl http:<span class="hljs-regexp">//</span>demo:demo@<span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">9093</span><span class="hljs-regexp">/stream/</span>{STREAM_ID}<span class="hljs-regexp">/info</span>
 </code></pre>
 <h4 id="response">Response</h4>
 <pre><code class="lang-json">{
@@ -412,7 +412,7 @@ status          - default stream status
 <h3 id="delete-a-stream">Delete a stream</h3>
 <h4 id="request">Request</h4>
 <p><code>GET /stream/{STREAM_ID}/delete</code></p>
-<pre><code class="lang-bash">curl http:<span class="hljs-regexp">//</span>demo:demo@<span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">8083</span><span class="hljs-regexp">/stream/</span>{STREAM_ID}<span class="hljs-regexp">/delete</span>
+<pre><code class="lang-bash">curl http:<span class="hljs-regexp">//</span>demo:demo@<span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">9093</span><span class="hljs-regexp">/stream/</span>{STREAM_ID}<span class="hljs-regexp">/delete</span>
 </code></pre>
 <h4 id="response">Response</h4>
 <pre><code class="lang-json">{
@@ -434,7 +434,7 @@ status          - default stream status
               <span class="hljs-string">"debug"</span>: <span class="hljs-literal">false</span>,
               <span class="hljs-string">"status"</span>: <span class="hljs-number">0</span>
           }' \
-  http://demo:demo@<span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">8083</span>/stream/{STREAM_ID}/channel/{CHANNEL_ID}/add
+  http://demo:demo@<span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">9093</span>/stream/{STREAM_ID}/channel/{CHANNEL_ID}/add
 </code></pre>
 <h4 id="response">Response</h4>
 <pre><code class="lang-json">{
@@ -455,7 +455,7 @@ status          - default stream status
               <span class="hljs-string">"debug"</span>: <span class="hljs-literal">false</span>,
               <span class="hljs-string">"status"</span>: <span class="hljs-number">0</span>
           }' \
-  http://demo:demo@<span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">8083</span>/stream/{STREAM_ID}/channel/{CHANNEL_ID}/edit
+  http://demo:demo@<span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">9093</span>/stream/{STREAM_ID}/channel/{CHANNEL_ID}/edit
 </code></pre>
 <h4 id="response">Response</h4>
 <pre><code class="lang-json">{
@@ -466,7 +466,7 @@ status          - default stream status
 <h3 id="reload-a-stream-channel">Reload a stream channel</h3>
 <h4 id="request">Request</h4>
 <p><code>GET /stream/{STREAM_ID}/channel/{CHANNEL_ID}/reload</code></p>
-<pre><code class="lang-bash">curl http:<span class="hljs-regexp">//</span>demo:demo@<span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">8083</span><span class="hljs-regexp">/stream/</span>{STREAM_ID}<span class="hljs-regexp">/channel/</span>{CHANNEL_ID}<span class="hljs-regexp">/reload</span>
+<pre><code class="lang-bash">curl http:<span class="hljs-regexp">//</span>demo:demo@<span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">9093</span><span class="hljs-regexp">/stream/</span>{STREAM_ID}<span class="hljs-regexp">/channel/</span>{CHANNEL_ID}<span class="hljs-regexp">/reload</span>
 </code></pre>
 <h4 id="response">Response</h4>
 <pre><code class="lang-json">{
@@ -477,7 +477,7 @@ status          - default stream status
 <h3 id="get-stream-channel-info">Get stream channel info</h3>
 <h4 id="request">Request</h4>
 <p><code>GET /stream/{STREAM_ID}/channel/{CHANNEL_ID}/info</code></p>
-<pre><code class="lang-bash">curl http:<span class="hljs-regexp">//</span>demo:demo@<span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">8083</span><span class="hljs-regexp">/stream/</span>{STREAM_ID}<span class="hljs-regexp">/channel/</span>{CHANNEL_ID}<span class="hljs-regexp">/info</span>
+<pre><code class="lang-bash">curl http:<span class="hljs-regexp">//</span>demo:demo@<span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">9093</span><span class="hljs-regexp">/stream/</span>{STREAM_ID}<span class="hljs-regexp">/channel/</span>{CHANNEL_ID}<span class="hljs-regexp">/info</span>
 </code></pre>
 <h4 id="response">Response</h4>
 <pre><code class="lang-json">{
@@ -494,7 +494,7 @@ status          - default stream status
 <h3 id="get-stream-channel-codec">Get stream channel codec</h3>
 <h4 id="request">Request</h4>
 <p><code>GET /stream/{STREAM_ID}/{CHANNEL_ID}/codec</code></p>
-<pre><code class="lang-bash">curl http:<span class="hljs-regexp">//</span>demo:demo@<span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">8083</span><span class="hljs-regexp">/stream/</span>{STREAM_ID}<span class="hljs-regexp">/{CHANNEL_ID}/</span>codec
+<pre><code class="lang-bash">curl http:<span class="hljs-regexp">//</span>demo:demo@<span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">9093</span><span class="hljs-regexp">/stream/</span>{STREAM_ID}<span class="hljs-regexp">/{CHANNEL_ID}/</span>codec
 </code></pre>
 <h4 id="response">Response</h4>
 <pre><code class="lang-json">{
@@ -533,7 +533,7 @@ status          - default stream status
 <h3 id="delete-a-stream-channel">Delete a stream channel</h3>
 <h4 id="request">Request</h4>
 <p><code>GET /stream/{STREAM_ID}/channel/{CHANNEL_ID}/delete</code></p>
-<pre><code class="lang-bash">curl http:<span class="hljs-regexp">//</span>demo:demo@<span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">8083</span><span class="hljs-regexp">/stream/</span>{STREAM_ID}<span class="hljs-regexp">/channel/</span>{CHANNEL_ID}<span class="hljs-regexp">/delete</span>
+<pre><code class="lang-bash">curl http:<span class="hljs-regexp">//</span>demo:demo@<span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">9093</span><span class="hljs-regexp">/stream/</span>{STREAM_ID}<span class="hljs-regexp">/channel/</span>{CHANNEL_ID}<span class="hljs-regexp">/delete</span>
 </code></pre>
 <h4 id="response">Response</h4>
 <pre><code class="lang-json">{
@@ -544,23 +544,23 @@ status          - default stream status
 <h2 id="video-endpoints">Video endpoints</h2>
 <h3 id="hls">HLS</h3>
 <p><code>GET /stream/{STREAM_ID}/channel/{CHANNEL_ID}/hls/live/index.m3u8</code></p>
-<pre><code class="lang-bash">curl http:<span class="hljs-regexp">//</span><span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">8083</span><span class="hljs-regexp">/stream/</span>{STREAM_ID}<span class="hljs-regexp">/channel/</span>{CHANNEL_ID}<span class="hljs-regexp">/hls/</span>live<span class="hljs-regexp">/index.m3u8</span>
+<pre><code class="lang-bash">curl http:<span class="hljs-regexp">//</span><span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">9093</span><span class="hljs-regexp">/stream/</span>{STREAM_ID}<span class="hljs-regexp">/channel/</span>{CHANNEL_ID}<span class="hljs-regexp">/hls/</span>live<span class="hljs-regexp">/index.m3u8</span>
 </code></pre>
-<pre><code class="lang-bash">ffplay http:<span class="hljs-regexp">//</span><span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">8083</span><span class="hljs-regexp">/stream/</span>{STREAM_ID}<span class="hljs-regexp">/channel/</span>{CHANNEL_ID}<span class="hljs-regexp">/hls/</span>live<span class="hljs-regexp">/index.m3u8</span>
+<pre><code class="lang-bash">ffplay http:<span class="hljs-regexp">//</span><span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">9093</span><span class="hljs-regexp">/stream/</span>{STREAM_ID}<span class="hljs-regexp">/channel/</span>{CHANNEL_ID}<span class="hljs-regexp">/hls/</span>live<span class="hljs-regexp">/index.m3u8</span>
 </code></pre>
 <h3 id="hls-ll">HLS-LL</h3>
 <p><code>GET /stream/{STREAM_ID}/channel/{CHANNEL_ID}/hlsll/live/index.m3u8</code></p>
-<pre><code class="lang-bash">curl http:<span class="hljs-regexp">//</span><span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">8083</span><span class="hljs-regexp">/stream/</span>{STREAM_ID}<span class="hljs-regexp">/channel/</span>{CHANNEL_ID}<span class="hljs-regexp">/hlsll/</span>live<span class="hljs-regexp">/index.m3u8</span>
+<pre><code class="lang-bash">curl http:<span class="hljs-regexp">//</span><span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">9093</span><span class="hljs-regexp">/stream/</span>{STREAM_ID}<span class="hljs-regexp">/channel/</span>{CHANNEL_ID}<span class="hljs-regexp">/hlsll/</span>live<span class="hljs-regexp">/index.m3u8</span>
 </code></pre>
-<pre><code class="lang-bash">ffplay http:<span class="hljs-regexp">//</span><span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">8083</span><span class="hljs-regexp">/stream/</span>{STREAM_ID}<span class="hljs-regexp">/channel/</span>{CHANNEL_ID}<span class="hljs-regexp">/hlsll/</span>live<span class="hljs-regexp">/index.m3u8</span>
+<pre><code class="lang-bash">ffplay http:<span class="hljs-regexp">//</span><span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">9093</span><span class="hljs-regexp">/stream/</span>{STREAM_ID}<span class="hljs-regexp">/channel/</span>{CHANNEL_ID}<span class="hljs-regexp">/hlsll/</span>live<span class="hljs-regexp">/index.m3u8</span>
 </code></pre>
 <h3 id="mse">MSE</h3>
 <p><code>/stream/{STREAM_ID}/channel/{CHANNEL_ID}/mse?uuid={STREAM_ID}&amp;channel={CHANNEL_ID}</code></p>
-<pre><code><span class="xml">ws://127.0.0.1:8083/stream/</span><span class="hljs-template-variable">{STREAM_ID}</span><span class="xml">/channel/</span><span class="hljs-template-variable">{CHANNEL_ID}</span><span class="xml">/mse?uuid=</span><span class="hljs-template-variable">{STREAM_ID}</span><span class="xml">&amp;channel=</span><span class="hljs-template-variable">{CHANNEL_ID}</span><span class="xml"></span>
+<pre><code><span class="xml">ws://127.0.0.1:9093/stream/</span><span class="hljs-template-variable">{STREAM_ID}</span><span class="xml">/channel/</span><span class="hljs-template-variable">{CHANNEL_ID}</span><span class="xml">/mse?uuid=</span><span class="hljs-template-variable">{STREAM_ID}</span><span class="xml">&amp;channel=</span><span class="hljs-template-variable">{CHANNEL_ID}</span><span class="xml"></span>
 </code></pre><p>NOTE: Use <code>wss</code> for a secure connection.</p>
 <h3 id="webrtc">WebRTC</h3>
 <p><code>/stream/{STREAM_ID}/channel/{CHANNEL_ID}/webrtc</code></p>
-<pre><code>http:<span class="hljs-regexp">//</span><span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">8083</span><span class="hljs-regexp">/stream/</span>{STREAM_ID}<span class="hljs-regexp">/channel/</span>{CHANNEL_ID}<span class="hljs-regexp">/webrtc</span>
+<pre><code>http:<span class="hljs-regexp">//</span><span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">9093</span><span class="hljs-regexp">/stream/</span>{STREAM_ID}<span class="hljs-regexp">/channel/</span>{CHANNEL_ID}<span class="hljs-regexp">/webrtc</span>
 </code></pre><h4 id="request">Request</h4>
 <p>The request is an HTTP <code>POST</code> with a FormData parameter <code>data</code> that is a base64 encoded SDP offer (e.g. <code>v=0...</code>) from a WebRTC client.</p>
 <h4 id="response">Response</h4>
@@ -571,9 +571,11 @@ status          - default stream status
 </code></pre><pre><code class="lang-bash">ffplay -rtsp_transport tcp rtsp:<span class="hljs-regexp">//</span><span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span><span class="hljs-regexp">/{STREAM_ID}/</span>{CHANNEL_ID}
 </code></pre>
 
-
-
-
+<h3 id="get-image-from-rtsp-stream">Get Image From RTSP STREAM</h3>
+<p><code>GET /image/{STREAM_ID}/channel/{CHANNEL_ID}</code></p>
+<pre><code>http:<span class="hljs-regexp">//</span><span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">9093</span><span class="hljs-regexp">/image/</span>{STREAM_ID}<span class="hljs-regexp">/channel/</span>{CHANNEL_ID}
+</code></pre><h4 id="response">Response</h4>
+<p>The response is a base64 image type JPEG.</p>
 
         <p>
           <a href="https://github.com/deepch/RTSPtoWeb/tree/master/docs/api.md">API documentation</a> is available in the GitHub repository.

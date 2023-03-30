@@ -1,25 +1,25 @@
 # RTSPtoWeb API
 
-  * [Streams](#streams)
-    * [List streams](#list-streams)
-    * [Add a stream](#add-a-stream)
-    * [Update a stream](#update-a-stream)
-    * [Reload a stream](#reload-a-stream)
-    * [Get stream info](#get-stream-info)
-    * [Delete a stream](#delete-a-stream)
-  * [Channels](#channels)
-    * [Add a channel to a stream](#add-a-channel-to-a-stream)
-    * [Update a stream channel](#update-a-stream-channel)
-    * [Reload a stream channel](#reload-a-stream-channel)
-    * [Get stream channel info](#get-stream-channel-info)
-    * [Get stream channel codec](#get-stream-channel-codec)
-    * [Delete a stream channel](#delete-a-stream-channel)
-  * [Video endpoints](#video-endpoints)
-    * [HLS](#hls)
-    * [HLS-LL](#hls-ll)
-    * [MSE](#mse)
-    * [WebRTC](#webrtc)
-    * [RTSP](#rtsp)
+- [Streams](#streams)
+  - [List streams](#list-streams)
+  - [Add a stream](#add-a-stream)
+  - [Update a stream](#update-a-stream)
+  - [Reload a stream](#reload-a-stream)
+  - [Get stream info](#get-stream-info)
+  - [Delete a stream](#delete-a-stream)
+- [Channels](#channels)
+  - [Add a channel to a stream](#add-a-channel-to-a-stream)
+  - [Update a stream channel](#update-a-stream-channel)
+  - [Reload a stream channel](#reload-a-stream-channel)
+  - [Get stream channel info](#get-stream-channel-info)
+  - [Get stream channel codec](#get-stream-channel-codec)
+  - [Delete a stream channel](#delete-a-stream-channel)
+- [Video endpoints](#video-endpoints)
+  - [HLS](#hls)
+  - [HLS-LL](#hls-ll)
+  - [MSE](#mse)
+  - [WebRTC](#webrtc)
+  - [RTSP](#rtsp)
 
 ## Streams
 
@@ -30,54 +30,54 @@
 `GET /streams`
 
 ```bash
-curl http://demo:demo@127.0.0.1:8083/streams
+curl http://demo:demo@127.0.0.1:9093/streams
 ```
 
 #### Response
 
 ```json
 {
-    "status": 1,
-    "payload": {
-        "demo1": {
-            "name": "test video",
-            "channels": {
-                "0": {
-                    "name": "ch1",
-                    "url": "rtsp://admin:admin@{YOUR_CAMERA_IP}/uri",
-                    "on_demand": true,
-                    "debug": false,
-                    "status": 0
-                },
-                "1": {
-                    "name": "ch2",
-                    "url": "rtsp://admin:admin@{YOUR_CAMERA_IP}/uri",
-                    "on_demand": true,
-                    "debug": false,
-                    "status": 0
-                }
-            }
+  "status": 1,
+  "payload": {
+    "demo1": {
+      "name": "test video",
+      "channels": {
+        "0": {
+          "name": "ch1",
+          "url": "rtsp://admin:admin@{YOUR_CAMERA_IP}/uri",
+          "on_demand": true,
+          "debug": false,
+          "status": 0
         },
-        "demo2": {
-            "name": "test video",
-            "channels": {
-                "0": {
-                    "name": "ch1",
-                    "url": "rtsp://admin:admin@{YOUR_CAMERA_IP}/uri",
-                    "on_demand": true,
-                    "debug": false,
-                    "status": 0
-                },
-                "1": {
-                    "name": "ch2",
-                    "url": "rtsp://admin:admin@{YOUR_CAMERA_IP}/uri",
-                    "on_demand": true,
-                    "debug": false,
-                    "status": 0
-                }
-            }
+        "1": {
+          "name": "ch2",
+          "url": "rtsp://admin:admin@{YOUR_CAMERA_IP}/uri",
+          "on_demand": true,
+          "debug": false,
+          "status": 0
         }
+      }
+    },
+    "demo2": {
+      "name": "test video",
+      "channels": {
+        "0": {
+          "name": "ch1",
+          "url": "rtsp://admin:admin@{YOUR_CAMERA_IP}/uri",
+          "on_demand": true,
+          "debug": false,
+          "status": 0
+        },
+        "1": {
+          "name": "ch2",
+          "url": "rtsp://admin:admin@{YOUR_CAMERA_IP}/uri",
+          "on_demand": true,
+          "debug": false,
+          "status": 0
+        }
+      }
     }
+  }
 }
 ```
 
@@ -110,15 +110,15 @@ curl \
                   }
               }
           }' \
-  http://demo:demo@127.0.0.1:8083/stream/{STREAM_ID}/add
+  http://demo:demo@127.0.0.1:9093/stream/{STREAM_ID}/add
 ```
 
 #### Response
 
 ```json
 {
-    "status": 1,
-    "payload": "success"
+  "status": 1,
+  "payload": "success"
 }
 ```
 
@@ -151,15 +151,15 @@ curl \
                   }
               }
           }' \
-  http://demo:demo@127.0.0.1:8083/stream/{STREAM_ID}/edit
+  http://demo:demo@127.0.0.1:9093/stream/{STREAM_ID}/edit
 ```
 
 #### Response
 
 ```json
 {
-    "status": 1,
-    "payload": "success"
+  "status": 1,
+  "payload": "success"
 }
 ```
 
@@ -170,15 +170,15 @@ curl \
 `GET /stream/{STREAM_ID}/reload`
 
 ```bash
-curl http://demo:demo@127.0.0.1:8083/stream/{STREAM_ID}/reload
+curl http://demo:demo@127.0.0.1:9093/stream/{STREAM_ID}/reload
 ```
 
 #### Response
 
 ```json
 {
-    "status": 1,
-    "payload": "success"
+  "status": 1,
+  "payload": "success"
 }
 ```
 
@@ -189,33 +189,33 @@ curl http://demo:demo@127.0.0.1:8083/stream/{STREAM_ID}/reload
 `GET /stream/{STREAM_ID}/info`
 
 ```bash
-curl http://demo:demo@127.0.0.1:8083/stream/{STREAM_ID}/info
+curl http://demo:demo@127.0.0.1:9093/stream/{STREAM_ID}/info
 ```
 
 #### Response
 
 ```json
 {
-    "status": 1,
-    "payload": {
-        "name": "test video",
-        "channels": {
-            "0": {
-                "name": "ch1",
-                "url": "rtsp://admin:admin@{YOUR_CAMERA_IP}/uri",
-                "on_demand": true,
-                "debug": false,
-                "status": 0
-            },
-            "1": {
-                "name": "ch2",
-                "url": "rtsp://admin:admin@{YOUR_CAMERA_IP}/uri",
-                "on_demand": true,
-                "debug": false,
-                "status": 0
-            }
-        }
+  "status": 1,
+  "payload": {
+    "name": "test video",
+    "channels": {
+      "0": {
+        "name": "ch1",
+        "url": "rtsp://admin:admin@{YOUR_CAMERA_IP}/uri",
+        "on_demand": true,
+        "debug": false,
+        "status": 0
+      },
+      "1": {
+        "name": "ch2",
+        "url": "rtsp://admin:admin@{YOUR_CAMERA_IP}/uri",
+        "on_demand": true,
+        "debug": false,
+        "status": 0
+      }
     }
+  }
 }
 ```
 
@@ -226,15 +226,15 @@ curl http://demo:demo@127.0.0.1:8083/stream/{STREAM_ID}/info
 `GET /stream/{STREAM_ID}/delete`
 
 ```bash
-curl http://demo:demo@127.0.0.1:8083/stream/{STREAM_ID}/delete
+curl http://demo:demo@127.0.0.1:9093/stream/{STREAM_ID}/delete
 ```
 
 #### Response
 
 ```json
 {
-    "status": 1,
-    "payload": "success"
+  "status": 1,
+  "payload": "success"
 }
 ```
 
@@ -257,15 +257,15 @@ curl \
               "debug": false,
               "status": 0
           }' \
-  http://demo:demo@127.0.0.1:8083/stream/{STREAM_ID}/channel/{CHANNEL_ID}/add
+  http://demo:demo@127.0.0.1:9093/stream/{STREAM_ID}/channel/{CHANNEL_ID}/add
 ```
 
 #### Response
 
 ```json
 {
-    "status": 1,
-    "payload": "success"
+  "status": 1,
+  "payload": "success"
 }
 ```
 
@@ -286,15 +286,15 @@ curl \
               "debug": false,
               "status": 0
           }' \
-  http://demo:demo@127.0.0.1:8083/stream/{STREAM_ID}/channel/{CHANNEL_ID}/edit
+  http://demo:demo@127.0.0.1:9093/stream/{STREAM_ID}/channel/{CHANNEL_ID}/edit
 ```
 
 #### Response
 
 ```json
 {
-    "status": 1,
-    "payload": "success"
+  "status": 1,
+  "payload": "success"
 }
 ```
 
@@ -305,15 +305,15 @@ curl \
 `GET /stream/{STREAM_ID}/channel/{CHANNEL_ID}/reload`
 
 ```bash
-curl http://demo:demo@127.0.0.1:8083/stream/{STREAM_ID}/channel/{CHANNEL_ID}/reload
+curl http://demo:demo@127.0.0.1:9093/stream/{STREAM_ID}/channel/{CHANNEL_ID}/reload
 ```
 
 #### Response
 
 ```json
 {
-    "status": 1,
-    "payload": "success"
+  "status": 1,
+  "payload": "success"
 }
 ```
 
@@ -324,66 +324,64 @@ curl http://demo:demo@127.0.0.1:8083/stream/{STREAM_ID}/channel/{CHANNEL_ID}/rel
 `GET /stream/{STREAM_ID}/channel/{CHANNEL_ID}/info`
 
 ```bash
-curl http://demo:demo@127.0.0.1:8083/stream/{STREAM_ID}/channel/{CHANNEL_ID}/info
+curl http://demo:demo@127.0.0.1:9093/stream/{STREAM_ID}/channel/{CHANNEL_ID}/info
 ```
 
 #### Response
 
 ```json
 {
-    "status": 1,
-    "payload": {
-        "name": "ch4",
-        "url": "rtsp://admin:admin@{YOUR_CAMERA_IP}/uri",
-        "on_demand": false,
-        "debug": false,
-        "status": 1
-    }
+  "status": 1,
+  "payload": {
+    "name": "ch4",
+    "url": "rtsp://admin:admin@{YOUR_CAMERA_IP}/uri",
+    "on_demand": false,
+    "debug": false,
+    "status": 1
+  }
 }
 ```
 
 ### Get stream channel codec
 
 #### Request
+
 `GET /stream/{STREAM_ID}/{CHANNEL_ID}/codec`
 
 ```bash
-curl http://demo:demo@127.0.0.1:8083/stream/{STREAM_ID}/{CHANNEL_ID}/codec
+curl http://demo:demo@127.0.0.1:9093/stream/{STREAM_ID}/{CHANNEL_ID}/codec
 ```
 
 #### Response
+
 ```json
 {
-    "status": 1,
-    "payload": [
-        {
-            "Record": "AU0AFP/hABRnTQAUlahQfoQAAAMABAAAAwCiEAEABGjuPIA=",
-            "RecordInfo": {
-                "AVCProfileIndication": 77,
-                "ProfileCompatibility": 0,
-                "AVCLevelIndication": 20,
-                "LengthSizeMinusOne": 3,
-                "SPS": [
-                    "Z00AFJWoUH6EAAADAAQAAAMAohA="
-                ],
-                "PPS": [
-                    "aO48gA=="
-                ]
-            },
-            "SPSInfo": {
-                "ProfileIdc": 77,
-                "LevelIdc": 20,
-                "MbWidth": 20,
-                "MbHeight": 15,
-                "CropLeft": 0,
-                "CropRight": 0,
-                "CropTop": 0,
-                "CropBottom": 0,
-                "Width": 320,
-                "Height": 240
-            }
-        }
-    ]
+  "status": 1,
+  "payload": [
+    {
+      "Record": "AU0AFP/hABRnTQAUlahQfoQAAAMABAAAAwCiEAEABGjuPIA=",
+      "RecordInfo": {
+        "AVCProfileIndication": 77,
+        "ProfileCompatibility": 0,
+        "AVCLevelIndication": 20,
+        "LengthSizeMinusOne": 3,
+        "SPS": ["Z00AFJWoUH6EAAADAAQAAAMAohA="],
+        "PPS": ["aO48gA=="]
+      },
+      "SPSInfo": {
+        "ProfileIdc": 77,
+        "LevelIdc": 20,
+        "MbWidth": 20,
+        "MbHeight": 15,
+        "CropLeft": 0,
+        "CropRight": 0,
+        "CropTop": 0,
+        "CropBottom": 0,
+        "Width": 320,
+        "Height": 240
+      }
+    }
+  ]
 }
 ```
 
@@ -394,14 +392,15 @@ curl http://demo:demo@127.0.0.1:8083/stream/{STREAM_ID}/{CHANNEL_ID}/codec
 `GET /stream/{STREAM_ID}/channel/{CHANNEL_ID}/delete`
 
 ```bash
-curl http://demo:demo@127.0.0.1:8083/stream/{STREAM_ID}/channel/{CHANNEL_ID}/delete
+curl http://demo:demo@127.0.0.1:9093/stream/{STREAM_ID}/channel/{CHANNEL_ID}/delete
 ```
 
 #### Response
+
 ```json
 {
-    "status": 1,
-    "payload": "success"
+  "status": 1,
+  "payload": "success"
 }
 ```
 
@@ -412,11 +411,11 @@ curl http://demo:demo@127.0.0.1:8083/stream/{STREAM_ID}/channel/{CHANNEL_ID}/del
 `GET /stream/{STREAM_ID}/channel/{CHANNEL_ID}/hls/live/index.m3u8`
 
 ```bash
-curl http://127.0.0.1:8083/stream/{STREAM_ID}/channel/{CHANNEL_ID}/hls/live/index.m3u8
+curl http://127.0.0.1:9093/stream/{STREAM_ID}/channel/{CHANNEL_ID}/hls/live/index.m3u8
 ```
 
 ```bash
-ffplay http://127.0.0.1:8083/stream/{STREAM_ID}/channel/{CHANNEL_ID}/hls/live/index.m3u8
+ffplay http://127.0.0.1:9093/stream/{STREAM_ID}/channel/{CHANNEL_ID}/hls/live/index.m3u8
 ```
 
 ### HLS-LL
@@ -424,11 +423,11 @@ ffplay http://127.0.0.1:8083/stream/{STREAM_ID}/channel/{CHANNEL_ID}/hls/live/in
 `GET /stream/{STREAM_ID}/channel/{CHANNEL_ID}/hlsll/live/index.m3u8`
 
 ```bash
-curl http://127.0.0.1:8083/stream/{STREAM_ID}/channel/{CHANNEL_ID}/hlsll/live/index.m3u8
+curl http://127.0.0.1:9093/stream/{STREAM_ID}/channel/{CHANNEL_ID}/hlsll/live/index.m3u8
 ```
 
 ```bash
-ffplay http://127.0.0.1:8083/stream/{STREAM_ID}/channel/{CHANNEL_ID}/hlsll/live/index.m3u8
+ffplay http://127.0.0.1:9093/stream/{STREAM_ID}/channel/{CHANNEL_ID}/hlsll/live/index.m3u8
 ```
 
 ### MSE
@@ -436,7 +435,7 @@ ffplay http://127.0.0.1:8083/stream/{STREAM_ID}/channel/{CHANNEL_ID}/hlsll/live/
 `/stream/{STREAM_ID}/channel/{CHANNEL_ID}/mse?uuid={STREAM_ID}&channel={CHANNEL_ID}`
 
 ```
-ws://127.0.0.1:8083/stream/{STREAM_ID}/channel/{CHANNEL_ID}/mse?uuid={STREAM_ID}&channel={CHANNEL_ID}
+ws://127.0.0.1:9093/stream/{STREAM_ID}/channel/{CHANNEL_ID}/mse?uuid={STREAM_ID}&channel={CHANNEL_ID}
 ```
 
 NOTE: Use `wss` for a secure connection.
@@ -446,7 +445,7 @@ NOTE: Use `wss` for a secure connection.
 `/stream/{STREAM_ID}/channel/{CHANNEL_ID}/webrtc`
 
 ```
-http://127.0.0.1:8083/stream/{STREAM_ID}/channel/{CHANNEL_ID}/webrtc
+http://127.0.0.1:9093/stream/{STREAM_ID}/channel/{CHANNEL_ID}/webrtc
 ```
 
 #### Request
@@ -468,3 +467,15 @@ rtsp://127.0.0.1:{RTSP_PORT}/{STREAM_ID}/{CHANNEL_ID}
 ```bash
 ffplay -rtsp_transport tcp rtsp://127.0.0.1/{STREAM_ID}/{CHANNEL_ID}
 ```
+
+### Get Image From RTSP STREAM
+
+`GET /image/{STREAM_ID}/channel/{CHANNEL_ID}`
+
+```
+http://127.0.0.1:9093/image/{STREAM_ID}/channel/{CHANNEL_ID}
+```
+
+#### Response
+
+The response is a base64 image type JPEG.
