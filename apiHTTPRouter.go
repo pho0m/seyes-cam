@@ -10,13 +10,13 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-//Message resp struct
+// Message rtsp struct
 type Message struct {
 	Status  int         `json:"status"`
 	Payload interface{} `json:"payload"`
 }
 
-//HTTPAPIServer start http server routes
+// HTTPAPIServer start http server routes
 func HTTPAPIServer() {
 	//Set HTTP API mode
 	log.WithFields(logrus.Fields{
@@ -46,7 +46,7 @@ func HTTPAPIServer() {
 
 	if Storage.ServerHTTPDemo() {
 		public.LoadHTMLGlob(Storage.ServerHTTPDir() + "/templates/*")
-		public.GET("/", HTTPAPIServerIndex)
+		public.GET("/", HTTPAPIStreamList)
 		public.GET("/pages/stream/list", HTTPAPIStreamList)
 		public.GET("/pages/stream/add", HTTPAPIAddStream)
 		public.GET("/pages/stream/edit/:uuid", HTTPAPIEditStream)
@@ -59,8 +59,9 @@ func HTTPAPIServer() {
 		public.GET("/pages/player/all/:uuid/:channel", HTTPAPIPlayAll)
 		public.StaticFS("/static", http.Dir(Storage.ServerHTTPDir()+"/static"))
 		// Get image from rtsp
-	  public.GET("/image/:uuid/channel/:channel", GetImageFromDisk)
+		public.GET("/image/:uuid/channel/:channel", GetImageFromDisk)
 
+		// public.StaticFile("/output-27aec28e-6181-4753-9acd-0456a75f0289-.jpg", "./output-27aec28e-6181-4753-9acd-0456a75f0289-.jpg")
 	}
 
 	/*
@@ -106,7 +107,6 @@ func HTTPAPIServer() {
 	//MSE
 	public.GET("/stream/:uuid/channel/:channel/mse", HTTPAPIServerStreamMSE)
 	public.POST("/stream/:uuid/channel/:channel/webrtc", HTTPAPIServerStreamWebRTC)
-
 
 	/*
 		HTTPS Mode Cert
@@ -154,7 +154,7 @@ func HTTPAPIServer() {
 
 }
 
-//HTTPAPIServerIndex index file
+// HTTPAPIServerIndex index file
 func HTTPAPIServerIndex(c *gin.Context) {
 	c.HTML(http.StatusOK, "index.tmpl", gin.H{
 		"port":    Storage.ServerHTTPPort(),
@@ -163,6 +163,15 @@ func HTTPAPIServerIndex(c *gin.Context) {
 		"page":    "index",
 	})
 
+}
+
+func HTTPAPIMultiview(c *gin.Context) {
+	c.HTML(http.StatusOK, "multiview.tmpl", gin.H{
+		"port":    Storage.ServerHTTPPort(),
+		"streams": Storage.Streams,
+		"version": time.Now().String(),
+		"page":    "multiview",
+	})
 }
 
 func HTTPAPIServerDocumentation(c *gin.Context) {
@@ -231,15 +240,6 @@ func HTTPAPIEditStream(c *gin.Context) {
 	})
 }
 
-func HTTPAPIMultiview(c *gin.Context) {
-	c.HTML(http.StatusOK, "multiview.tmpl", gin.H{
-		"port":    Storage.ServerHTTPPort(),
-		"streams": Storage.Streams,
-		"version": time.Now().String(),
-		"page":    "multiview",
-	})
-}
-
 func HTTPAPIPlayAll(c *gin.Context) {
 	c.HTML(http.StatusOK, "play_all.tmpl", gin.H{
 		"port":    Storage.ServerHTTPPort(),
@@ -286,7 +286,7 @@ func HTTPAPIFullScreenMultiView(c *gin.Context) {
 	})
 }
 
-//CrossOrigin Access-Control-Allow-Origin any methods
+// CrossOrigin Access-Control-Allow-Origin any methods
 func CrossOrigin() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")

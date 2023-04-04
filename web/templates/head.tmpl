@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
 
-  <title>RTSPtoWEB</title>
+  <title>Seyes Camera</title>
   <link rel="stylesheet" href="/../static/plugins/fontawesome-free/css/all.min.css">
   <link rel="stylesheet" href="/../static/css/adminlte.min.css">
   <link rel="stylesheet" href="/../static/plugins/sweetalert2/sweetalert2.min.css">
@@ -40,24 +40,14 @@
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
       <a href="/" class="brand-link">
         <span class="brand-text font-weight-light">Seyes Camera Config</span>
-        <h6>RTSP to web</h6>
+        <br/>
+        <span class="brand-text font-weight-light">RTSP to web</span>
       </a>
 
       <div class="sidebar">
         <nav class="mt-2">
           <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-            <li class="nav-item">
-              <a href="/" class="nav-link
-              {{ if eq .page "index"}}
-                active
-              {{end}}
-              ">
-                <i class="nav-icon fas fa-tachometer-alt"></i>
-                <p>
-                  Dashboard
-                </p>
-              </a>
-            </li>
+            
             <li class="nav-header">NAVIGATION</li>
             <li class="nav-item ">
               <a href="/pages/stream/list" class="nav-link {{ if  (eq .page "stream_list") }}
@@ -84,6 +74,16 @@
                 <p>Full multiview</p>
               </a>
             </li>
+        <!-- /.FIXME -->
+            <li class="nav-item ">
+              <a href="http://localhost:9095/" class="nav-link {{ if  (eq .page "fullscreenmulti") }}
+                active
+              {{end}}">
+                <i class="nav-icon fas fa-tachometer-alt"></i>
+                <p>Back To Seyes App</p>
+              </a>
+            </li>
+
             <li class="nav-header">MISCELLANEOUS</li>
             <li class="nav-item">
               <a href="/pages/documentation" class="nav-link

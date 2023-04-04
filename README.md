@@ -32,20 +32,20 @@ without the use of FFmpeg or GStreamer!
     $ GO111MODULE=on go run *.go
    ```
 1. Open Browser
-    ```bash
-    open web browser http://127.0.0.1:8083 work chrome, safari, firefox
-    ```
+   ```bash
+   open web browser http://127.0.0.1:9093 work chrome, safari, firefox
+   ```
 
 ## Installation from docker
 
 1. Run docker container
-    ```bash
-    $ docker run --name rtsp-to-web --network host ghcr.io/deepch/rtsptoweb:latest 
-    ```
+   ```bash
+   $ docker run --name rtsp-to-web --network host ghcr.io/deepch/rtsptoweb:latest
+   ```
 1. Open Browser
-    ```bash
-    open web browser http://127.0.0.1:8083 in chrome, safari, firefox
-    ```
+   ```bash
+   open web browser http://127.0.0.1:9093 in chrome, safari, firefox
+   ```
 
 You may override the <a href="#example-configjson">configuration</a> `/PATH_TO_CONFIG/config.json` and mount as a docker volume:
 
@@ -53,7 +53,7 @@ You may override the <a href="#example-configjson">configuration</a> `/PATH_TO_C
 $ docker run --name rtsp-to-web \
     -v /PATH_TO_CONFIG/config.json:/config/config.json \
     --network host \
-    ghcr.io/deepch/rtsptoweb:latest 
+    ghcr.io/deepch/rtsptoweb:latest
 ```
 
 ## Configuration
@@ -124,12 +124,12 @@ file.php need response json
 
 ```text
    status: "1" or "0"
- ```
+```
 
 #### RTSP pull modes
 
-  * **on demand** (on_demand=true) - only pull video from the source when there's a viewer
-  * **static** (on_demand=false) - pull video from the source constantly
+- **on demand** (on_demand=true) - only pull video from the source when there's a viewer
+- **static** (on_demand=false) - pull video from the source constantly
 
 ### Example config.json
 
@@ -142,7 +142,7 @@ file.php need response json
     "http_debug": false,
     "http_login": "demo",
     "http_password": "demo",
-    "http_port": ":8083",
+    "http_port": ":9093",
     "ice_servers": ["stun:stun.l.google.com:19302"],
     "rtsp_port": ":5541"
   },
@@ -230,8 +230,8 @@ CPU usage ≈0.2%-1% one (thread) core cpu intel core i7 per stream
 
 ## Authors
 
-* **Andrey Semochkin** - *Initial work video* - [deepch](https://github.com/deepch)
-* **Dmitriy Vladykin** - *Initial work web UI* - [vdalex25](https://github.com/vdalex25)
+- **Andrey Semochkin** - _Initial work video_ - [deepch](https://github.com/deepch)
+- **Dmitriy Vladykin** - _Initial work web UI_ - [vdalex25](https://github.com/vdalex25)
 
 See also the list of [contributors](https://github.com/deepch/RTSPtoWeb/contributors) who participated in this project.
 

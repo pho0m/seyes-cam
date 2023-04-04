@@ -1,17 +1,17 @@
 package main
 
 import (
+	"bytes"
 	"encoding/base64"
-	"image/jpeg"
-
+	"io"
 	"io/ioutil"
+	"os/exec"
+
 	"math"
 	"net/url"
-	"os"
 	"strings"
 	"time"
 
-	"github.com/deepch/vdk/cgo/ffmpeg"
 	"github.com/deepch/vdk/format/rtmp"
 	"github.com/gin-gonic/gin"
 
@@ -93,7 +93,7 @@ func StreamServerRunStream(streamID string, channelID string, opt *ChannelST) (i
 	/*
 		Example wait codec
 	*/
-	var videoIDX int
+	// var videoIDX int
 
 	if RTSPClient.WaitCodec {
 		WaitCodec = true
@@ -101,12 +101,12 @@ func StreamServerRunStream(streamID string, channelID string, opt *ChannelST) (i
 		if len(RTSPClient.CodecData) > 0 {
 			Storage.StreamChannelCodecsUpdate(streamID, channelID, RTSPClient.CodecData, RTSPClient.SDPRaw)
 		}
-		for i, codec := range RTSPClient.CodecData {
+		// for i, codec := range RTSPClient.CodecData {
 
-			if codec.Type().IsVideo() {
-				videoIDX = i
-			}
-		}
+		// 	if codec.Type().IsVideo() {
+		// 		videoIDX = i
+		// 	}
+		// }
 	}
 	log.WithFields(logrus.Fields{
 		"module":  "core",
@@ -158,7 +158,7 @@ func StreamServerRunStream(streamID string, channelID string, opt *ChannelST) (i
 			}
 
 			if packetAV.IsKeyFrame {
-				keyTest.Reset(20 * time.Second)
+				keyTest.Reset(50 * time.Second)
 				if preKeyTS > 0 {
 					Storage.StreamHLSAdd(streamID, channelID, Seq, packetAV.Time-preKeyTS)
 					Seq = []*av.Packet{}
@@ -174,23 +174,37 @@ func StreamServerRunStream(streamID string, channelID string, opt *ChannelST) (i
 				start = true
 			}
 
-			var FrameDecoderSingle *ffmpeg.VideoDecoder
+			// var FrameDecoderSingle *ffmpeg.VideoDecoder
 
-			FrameDecoderSingle, err = ffmpeg.NewVideoDecoder(RTSPClient.CodecData[videoIDX].(av.VideoCodecData))
-			if err != nil {
-				log.Fatalln("FrameDecoderSingle Error", err)
-			}
+			// FrameDecoderSingle, err = ffmpeg.NewVideoDecoder(RTSPClient.CodecData[videoIDX].(av.VideoCodecData))
+			// if err != nil {
+			// 	log.Fatalln("FrameDecoderSingle Error", err)
+			// }
 
-			if packetAV.IsKeyFrame {
-				//sample single frame decode encode to jpeg save on disk //
-				if pic, err := FrameDecoderSingle.DecodeSingle(packetAV.Data); err == nil && pic != nil {
-					if out, err := os.Create("./output-" + streamID + "-" + ".jpg"); err == nil {
-						if err = jpeg.Encode(out, &pic.Image, nil); err == nil {
-							logrus.Print("image save !" + out.Name())
-						}
-					}
-				}
-			}
+			// if packetAV.IsKeyFrame {
+			// 	mychan1 := make(chan string, 2)
+			// 	 select {
+  
+			// 		// Case statement
+			// 		case out := <-mychan1:
+			// 				fmt.Println(out)
+				
+			// 		// Calling After method
+			// 		case <-time.After(10 * time.Second):
+			// 				fmt.Println("timeout....1")
+			// 	}
+			// 	//sample single frame decode encode to jpeg save on disk //
+			// 	if pic, err := FrameDecoderSingle.DecodeSingle(packetAV.Data); err == nil && pic != nil {
+			// 		// ttt := time.Now()
+			// 		path := filepath.Join("./storage" + "/output-" + streamID + "-" + ".jpg")
+
+			// 		if out, err := os.Create(path); err == nil {
+			// 			if err = jpeg.Encode(out, &pic.Image, nil); err == nil {
+			// 				logrus.Print("image save !" + out.Name())
+			// 			}
+			// 		}
+			// 	}
+			// }
 
 			/*
 				FPS mode probe
@@ -216,6 +230,7 @@ func StreamServerRunStream(streamID string, channelID string, opt *ChannelST) (i
 		}
 	}
 }
+
 
 func StreamServerRunStreamRTMP(streamID string, channelID string, opt *ChannelST) (int, error) {
 	keyTest := time.NewTimer(20 * time.Second)
@@ -347,11 +362,36 @@ func StreamServerRunStreamRTMP(streamID string, channelID string, opt *ChannelST
 	}
 }
 
+
+
+
+func populateStdin(file []byte) func(io.WriteCloser) {
+    return func(stdin io.WriteCloser) {
+        defer stdin.Close()
+        io.Copy(stdin, bytes.NewReader(file)) 
+    }
+}
+
+
+
 func GetImageFromDisk(c *gin.Context) {
+	streamID := c.Params.ByName("uuid")
+	channelID := c.Params.ByName("channel")
 
-	uuid := c.Params.ByName("uuid")
+	cmd :=  exec.Command("ffmpeg","-y", "-rtsp_transport", "tcp", "-i", "rtsp://202.44.35.76:5541/"+streamID+"/"+channelID, "-vframes" ,"1" ,"./storage/output-c319f57f-6db1-4ada-9ca4-f0fdb38c13f2-.jpg")
 
-	fileBytes, err := ioutil.ReadFile("output-" + uuid + "-.jpg")
+logrus.Print(cmd)
+logrus.Print("starting snapshot")
+
+
+
+err := cmd.Run()
+if err != nil {
+	c.IndentedJSON(500, Message{Status: 0, Payload: err.Error()})
+    return 
+}
+
+	fileBytes, err := ioutil.ReadFile("./storage" + "/output-" + streamID + "-.jpg")
 	if err != nil {
 		panic(err)
 	}
@@ -360,13 +400,13 @@ func GetImageFromDisk(c *gin.Context) {
 
 	if err != nil {
 		c.IndentedJSON(500, Message{Status: 0, Payload: err.Error()})
-		return
+		return 
 	}
 
 	c.JSON(200, gin.H{
 		"image": b64,
+		
 	})
-
 }
 
 // Takes bytes and returns encoded base64 string
@@ -376,7 +416,5 @@ func toBase64(b []byte) string {
 
 // Takes Image and converts returns it base64 string
 func ConvertToBase64(imgByte []byte) string {
-
-	bs64string := "data:image/jpeg;base64," + toBase64(imgByte)
-	return bs64string
+	return toBase64(imgByte)
 }
