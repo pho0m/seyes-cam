@@ -395,7 +395,7 @@ func GetImageFromDisk(c *gin.Context) {
 		return
 	}
 
-	res := "data:image/jpeg;base64," + b64
+	res := "data:image/png;base64," + b64
 
 	c.JSON(200, gin.H{
 		"image": res,
