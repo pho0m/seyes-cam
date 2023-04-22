@@ -217,7 +217,7 @@ func HTTPAPIPlayWebrtc(c *gin.Context) {
 		"port":    Storage.ServerHTTPPort(),
 		"streams": Storage.Streams,
 		"version": time.Now().String(),
-		"page":    "play_webrtc",
+		"page":    "multiview",
 		"uuid":    c.Param("uuid"),
 		"channel": c.Param("channel"),
 	})

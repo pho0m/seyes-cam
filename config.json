@@ -15,7 +15,9 @@
     "https_key": "server.key",
     "https_port": ":443",
     "ice_credential": "",
-    "ice_servers": ["stun:stun.l.google.com:19302"],
+    "ice_servers": [
+      "stun:stun.l.google.com:19302"
+    ],
     "ice_username": "",
     "log_level": "debug",
     "rtsp_port": ":5541",
@@ -27,21 +29,14 @@
     "webrtc_port_min": 0
   },
   "streams": {
-    "27aec28e-6181-4753-9acd-0456a75f0289": {
+    "c6650dcf-e9dc-426e-9b2f-0f4c8e48d6ab": {
       "channels": {
         "0": {
-          "url": "rtsp://202.44.35.76:5541/c319f57f-6db1-4ada-9ca4-f0fdb38c13f2/0"
+          "on_demand": true,
+          "url": "rtsp://admin1:admin1@192.168.1.107:554/stream1"
         }
       },
-      "name": "cam1_709"
-    },
-    "c319f57f-6db1-4ada-9ca4-f0fdb38c13f2": {
-      "channels": {
-        "0": {
-          "url": "rtsp://202.44.35.76:5541/27aec28e-6181-4753-9acd-0456a75f0289/0"
-        }
-      },
-      "name": "cam2_702"
+      "name": "cam_1"
     }
   }
 }

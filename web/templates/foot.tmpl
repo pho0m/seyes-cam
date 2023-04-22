@@ -1,44 +1,4 @@
-</div><!-- content-wrapper -->
 
-<!-- Control Sidebar -->
-<aside class="control-sidebar control-sidebar-dark">
-  <!-- Control sidebar content goes here -->
-  <div class="p-3">
-    <h5>Default player</h5>
-
-<div class="form-check">
-  <label class="form-check-label">
-  <input class="form-check-input" type="radio" name="defaultPlayer"  value="hls">
-    HLS
-  </label>
-</div>
-<div class="form-check">
-  <label class="form-check-label">
-  <input class="form-check-input" type="radio" name="defaultPlayer" checked value="mse">
-    MSE
-  </label>
-</div>
-<div class="form-check">
-  <label class="form-check-label">
-  <input class="form-check-input" type="radio" name="defaultPlayer" value="webrtc">
-    WebRTC
-  </label>
-</div>
-
-  </div>
-</aside>
-<!-- /.control-sidebar -->
-
-<!-- Main Footer -->
-<footer class="main-footer">
-  <!-- To the right -->
-  <div class="float-right d-none d-sm-inline">
-    <b>Version: </b> {{ .version }}
-  </div>
-  <!-- Default to the left -->
-</footer>
-</div>
-<!-- ./wrapper -->
 <script>
 let streams = {{ .streams }};
 </script>

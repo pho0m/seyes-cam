@@ -376,12 +376,13 @@ func populateStdin(file []byte) func(io.WriteCloser) {
 
 func GetImageFromDisk(c *gin.Context) {
 	streamID := c.Params.ByName("uuid")
-	channelID := c.Params.ByName("channel")
+	// channelID := c.Params.ByName("channel")
 
-	cmd :=  exec.Command("ffmpeg","-y", "-rtsp_transport", "tcp", "-i", "rtsp://202.44.35.76:5541/"+streamID+"/"+channelID, "-vframes" ,"1" ,"./storage/output-c319f57f-6db1-4ada-9ca4-f0fdb38c13f2-.jpg")
+	cmd :=  exec.Command("ffmpeg","-y", "-rtsp_transport", "tcp", "-i", "rtsp://admin1:admin1@192.168.1.107:554/stream1", "-vframes" ,"1" ,"./storage/output-c319f57f-6db1-4ada-9ca4-f0fdb38c13f2-.jpg")
 
 logrus.Print(cmd)
 logrus.Print("starting snapshot")
+
 
 
 
@@ -390,6 +391,8 @@ if err != nil {
 	c.IndentedJSON(500, Message{Status: 0, Payload: err.Error()})
     return 
 }
+
+
 
 	fileBytes, err := ioutil.ReadFile("./storage" + "/output-" + streamID + "-.jpg")
 	if err != nil {
