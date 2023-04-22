@@ -184,11 +184,11 @@ func StreamServerRunStream(streamID string, channelID string, opt *ChannelST) (i
 			// if packetAV.IsKeyFrame {
 			// 	mychan1 := make(chan string, 2)
 			// 	 select {
-  
+
 			// 		// Case statement
 			// 		case out := <-mychan1:
 			// 				fmt.Println(out)
-				
+
 			// 		// Calling After method
 			// 		case <-time.After(10 * time.Second):
 			// 				fmt.Println("timeout....1")
@@ -230,7 +230,6 @@ func StreamServerRunStream(streamID string, channelID string, opt *ChannelST) (i
 		}
 	}
 }
-
 
 func StreamServerRunStreamRTMP(streamID string, channelID string, opt *ChannelST) (int, error) {
 	keyTest := time.NewTimer(20 * time.Second)
@@ -362,37 +361,27 @@ func StreamServerRunStreamRTMP(streamID string, channelID string, opt *ChannelST
 	}
 }
 
-
-
-
 func populateStdin(file []byte) func(io.WriteCloser) {
-    return func(stdin io.WriteCloser) {
-        defer stdin.Close()
-        io.Copy(stdin, bytes.NewReader(file)) 
-    }
+	return func(stdin io.WriteCloser) {
+		defer stdin.Close()
+		io.Copy(stdin, bytes.NewReader(file))
+	}
 }
-
-
 
 func GetImageFromDisk(c *gin.Context) {
 	streamID := c.Params.ByName("uuid")
 	// channelID := c.Params.ByName("channel")
 
-	cmd :=  exec.Command("ffmpeg","-y", "-rtsp_transport", "tcp", "-i", "rtsp://admin1:admin1@192.168.1.107:554/stream1", "-vframes" ,"1" ,"./storage/output-c319f57f-6db1-4ada-9ca4-f0fdb38c13f2-.jpg")
+	cmd := exec.Command("ffmpeg", "-y", "-rtsp_transport", "tcp", "-i", "rtsp://admin1:admin1@192.168.1.107:554/stream1", "-vframes", "1", "./storage/output-c319f57f-6db1-4ada-9ca4-f0fdb38c13f2-.jpg")
 
-logrus.Print(cmd)
-logrus.Print("starting snapshot")
+	logrus.Print(cmd)
+	logrus.Print("starting snapshot")
 
-
-
-
-err := cmd.Run()
-if err != nil {
-	c.IndentedJSON(500, Message{Status: 0, Payload: err.Error()})
-    return 
-}
-
-
+	err := cmd.Run()
+	if err != nil {
+		c.IndentedJSON(500, Message{Status: 0, Payload: err.Error()})
+		return
+	}
 
 	fileBytes, err := ioutil.ReadFile("./storage" + "/output-" + streamID + "-.jpg")
 	if err != nil {
@@ -403,12 +392,13 @@ if err != nil {
 
 	if err != nil {
 		c.IndentedJSON(500, Message{Status: 0, Payload: err.Error()})
-		return 
+		return
 	}
 
+	res := "data:image/jpeg;base64," + b64
+
 	c.JSON(200, gin.H{
-		"image": b64,
-		
+		"image": res,
 	})
 }
 
