@@ -15,7 +15,9 @@
     "https_key": "server.key",
     "https_port": ":443",
     "ice_credential": "",
-    "ice_servers": ["stun:stun.l.google.com:19302"],
+    "ice_servers": [
+      "stun:stun.l.google.com:19302"
+    ],
     "ice_username": "",
     "log_level": "debug",
     "rtsp_port": ":5541",
@@ -27,21 +29,40 @@
     "webrtc_port_min": 0
   },
   "streams": {
+    "0db6ecdf-cd7a-4c62-a187-88bac6858e92": {
+      "channels": {
+        "0": {
+          "on_demand": true,
+          "url": "rtsp://utotech:utotech4pass@192.168.1.114/stream1"
+        }
+      },
+      "name": "cam3"
+    },
     "27aec28e-6181-4753-9acd-0456a75f0289": {
       "channels": {
         "0": {
-          "url": "rtsp://202.44.35.76:5541/c319f57f-6db1-4ada-9ca4-f0fdb38c13f2/0"
+          "url": "rtsp://utotech:utotech4pass@192.168.1.112/stream1/27aec28e-6181-4753-9acd-0456a75f0289/0"
         }
       },
-      "name": "cam1_709"
+      "name": "cam1"
     },
-    "c319f57f-6db1-4ada-9ca4-f0fdb38c13f2": {
+    "5655eae0-f0f5-4817-84b2-f30e483298fa": {
       "channels": {
         "0": {
-          "url": "rtsp://202.44.35.76:5541/27aec28e-6181-4753-9acd-0456a75f0289/0"
+          "on_demand": true,
+          "url": "rtsp://utotech:utotech4pass@192.168.1.118/stream1"
         }
       },
-      "name": "cam2_702"
+      "name": "cam4"
+    },
+    "9f0bdabf-0fef-47ba-8c2f-7bee994b2ad1": {
+      "channels": {
+        "0": {
+          "on_demand": true,
+          "url": "rtsp://utotech:utotech4pass@192.168.1.113/stream1"
+        }
+      },
+      "name": "cam2"
     }
   }
 }
